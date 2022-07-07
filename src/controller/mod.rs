@@ -13,13 +13,11 @@ pub mod response_data;
 
 // 初始化路由
 pub fn init_router() ->Router{
-   let router = Router::new();
-    router.path("/system/user/get_sort_list").get(get_sort_list)
+   let  router = Router::new()
+        .path("/system/user/get_sort_list").get(get_sort_list)
         .push(Router::with_path("/system/user/get_by_id").get(get_by_id))
         .push(Router::with_path("/system/user/get_profile").get(get_by_id));
-
-
-    router
+    return router
 }
 
 #[derive(Debug,Serialize,Deserialize)]

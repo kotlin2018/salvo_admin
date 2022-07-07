@@ -4,14 +4,24 @@ use tokio::fs::OpenOptions;
 
 /// 分页参数
 #[derive(Debug,Serialize,Deserialize,Extractible)]
-//#[extract(default_source(from = "body", format = "json"))]
+#[extract(default_source(from = "query"))]
 pub struct PageParams {
+    // #[extract(source(from = "query"))]
     pub page_num: Option<usize>,
     pub page_size: Option<usize>,
     pub sort: Option<String>,
 }
 
 #[derive(Debug,Serialize,Deserialize,Extractible)]
+#[extract(default_source(from = "query"))]
 pub struct Search {
-
+    pub user_id: Option<String>,
+    pub role_id: Option<String>,
+    pub user_ids: Option<Vec<String>>,
+    pub user_name: Option<String>,
+    pub phone_num: Option<String>,
+    pub user_nickname: Option<String>,
+    pub user_status: Option<String>,
+    pub begin_time: Option<String>,
+    pub end_time: Option<String>,
 }

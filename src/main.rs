@@ -1,0 +1,18 @@
+#[macro_use]
+extern crate rbatis;
+use salvo::prelude::*;
+use crate::controller::init_router;
+use crate::dao::ApplicationConfig;
+
+mod dao;
+mod entity;
+mod controller;
+
+#[tokio::main]
+async fn main() {
+    let server_url = ApplicationConfig::default().server_url;
+    tracing_subscriber::fmt::init();
+    tracing::info!("Listening on {:?}",&server_url);//这里传 server_url 的引用
+    Server::new(TcpListener::
+    bind(&server_url)).serve(init_router()).await;
+}

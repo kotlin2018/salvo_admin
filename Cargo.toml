@@ -2,12 +2,13 @@
 name = "salvo_admin"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 tokio = {version = "1",features = ["macros"]}
-salvo = "0.25.0"
+salvo = "0.26.1"
 rbatis = "3.1.11"
 rbson = "2.0.3"
 serde = { version = "1", features = ["derive"]}

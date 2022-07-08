@@ -9,4 +9,5 @@ mod role_dept;
 mod role_api;
 mod post;
 mod operate_log;
+mod menu;
 

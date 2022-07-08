@@ -8,4 +8,5 @@ mod update_log;
 mod role_dept;
 mod role_api;
 mod post;
+mod operate_log;
 

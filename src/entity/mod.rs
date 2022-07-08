@@ -18,3 +18,15 @@ mod dict_data;
 mod dept;
 mod api_db;
 
+#[cfg(test)]
+mod test {
+    use crate::init_rbatis;
+
+    #[test]
+    async fn test(){
+        let rb = init_rbatis().await;
+        rb.fe
+    }
+
+}
+

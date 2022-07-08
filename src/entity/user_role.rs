@@ -1,9 +1,9 @@
 use rbatis::DateTimeNative;
 use serde::{Serialize, Deserialize};
 
-#[crud_table]
+#[crud_table(table_name:user_role)]
 #[derive(Debug,Serialize,Deserialize)]
-pub struct Role {
+pub struct UserRoleEntity {
     pub id: Option<u32>,
     pub user_id: Option<u32>,
     pub role_id: Option<u32>,
@@ -11,7 +11,7 @@ pub struct Role {
     pub created_at: Option<DateTimeNative>,
 }
 
-impl Default for Role {
+impl Default for UserRoleEntity {
     fn default() -> Self {
         Self{
             id: None,

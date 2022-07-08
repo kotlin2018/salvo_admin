@@ -1,3 +1,6 @@
+mod user_mapper;
+
+use once_cell::sync::Lazy;
 use rbatis::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use yaml_rust::{Yaml, YamlLoader};
@@ -87,8 +90,12 @@ fn to_vec_string(arg: Vec<Yaml>) -> Vec<String>{
     arr
 }
 
+// 定义全局静态变量
+pub static RB: Lazy<Rbatis> = Lazy::new(||Rbatis::new());
+
 // 初始化 rbatis
-pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis{
+pub async fn init_rbatis() -> Rbatis{
+    let config = ApplicationConfig::default();
     let mut rbatis = Rbatis::new();
     rbatis.logic_plugin = Some(Box::new(RbatisLogicDeletePlugin::new_opt(
         &config.logic_column,

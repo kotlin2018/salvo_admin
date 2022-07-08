@@ -1,9 +1,10 @@
 use rbatis::DateTimeNative;
 use serde::{Serialize, Deserialize};
 
-#[crud_table]
+// 用户表
+#[crud_table(table_name:user)]
 #[derive(Debug,Serialize,Deserialize)]
-pub struct User{
+pub struct UserEntity{
     pub id: Option<u32>,
     pub user_name: Option<String>,
     pub user_nickname: Option<String>,
@@ -24,7 +25,7 @@ pub struct User{
     pub deleted_at: Option<DateTimeNative>,
 }
 
-impl Default for User {
+impl Default for UserEntity {
     fn default() -> Self {
        Self{
            id: None,

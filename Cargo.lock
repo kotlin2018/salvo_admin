@@ -1701,6 +1701,7 @@ name = "salvo_admin"
 version = "0.1.0"
 dependencies = [
  "fast_log",
+ "once_cell",
  "rbatis",
  "rbson",
  "salvo",

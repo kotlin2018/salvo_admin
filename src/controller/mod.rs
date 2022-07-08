@@ -9,7 +9,7 @@ mod oper_log_controller;
 mod menu_controller;
 mod login_log_controller;
 mod request_data;
-pub mod response_data;
+mod response_data;
 
 // 初始化路由
 pub fn init_router() ->Router{

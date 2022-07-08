@@ -10,4 +10,10 @@ mod role_api;
 mod post;
 mod operate_log;
 mod menu;
+mod login_log;
+mod job_log;
+mod job;
+mod dict_type;
+mod dict_data;
+mod dept;
 

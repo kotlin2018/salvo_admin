@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://github.com/rbatis/rbatis_sql/raw/main/mybatis-3-mapper.dtd">
 <mapper>
     <select id="get_sort_list">
-        select * from biz_activity
+        select * from
         <where>
             <if test="name != ''">
                 and name like #{name}

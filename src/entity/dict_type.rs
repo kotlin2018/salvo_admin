@@ -1,10 +1,10 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:dict_type)]
+#[crud_table(table_name:sys_dict_type)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct DictTypeEntity {
-    pub dict_type_id: Option<u32>,
+    pub dict_type_id: Option<Uuid>,
     pub dict_name: Option<String>,
     pub dict_type: Option<String>,
     pub status: Option<String>,

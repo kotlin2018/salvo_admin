@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:role_api)]
+#[crud_table(table_name:sys_role_api)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct RoleApiEntity {
-    pub id: Option<u32>,
-    pub role_id: Option<u32>,
+    pub id: Option<Uuid>,
+    pub role_id: Option<Uuid>,
     pub api: Option<String>,
     pub method: Option<String>,
     pub created_by: Option<String>,

@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative,Uuid};
 use serde::{Serialize, Deserialize};
 
 // 用户表
-#[crud_table(table_name:user)]
+#[crud_table(table_name:sys_user)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct UserEntity{
-    pub id: Option<u32>,
+    pub id: Option<Uuid>,
     pub user_name: Option<String>,
     pub user_nickname: Option<String>,
     pub user_password: Option<String>,
@@ -13,8 +13,8 @@ pub struct UserEntity{
     pub user_email: Option<String>,
     pub sex: Option<String>,
     pub avatar: Option<String>,
-    pub role_id: Option<u32>,
-    pub dept_id: Option<u32>,
+    pub role_id: Option<Uuid>,
+    pub dept_id: Option<Uuid>,
     pub remark: Option<String>,
     pub is_admin: Option<bool>,
     pub phone_num: Option<String>,

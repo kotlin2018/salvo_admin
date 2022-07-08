@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:menu)]
+#[crud_table(table_name:sys_menu)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct MenuEntity {
-    pub id: Option<u32>,
-    pub pid: Option<u32>,
+    pub id: Option<Uuid>,
+    pub pid: Option<Uuid>,
     pub path: Option<String>,
     pub menu_name: Option<String>,
     pub icon: Option<String>,

@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:dept)]
+#[crud_table(table_name:sys_dept)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct DeptEntity {
-    pub dept_id: Option<u32>,
-    pub parent_id: Option<u32>,
+    pub dept_id: Option<Uuid>,
+    pub parent_id: Option<Uuid>,
     pub dept_name: Option<String>,
     pub order_num: Option<u32>,
     pub leader: Option<String>,

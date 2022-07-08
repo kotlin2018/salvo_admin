@@ -1,12 +1,12 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:user_online)]
+#[crud_table(table_name:sys_user_online)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct UserOnlineEntity {
-    pub id: Option<u32>,
-    pub u_id: Option<u32>,
-    pub token_id: Option<u32>,
+    pub id: Option<Uuid>,
+    pub u_id: Option<Uuid>,
+    pub token_id: Option<Uuid>,
     pub token_exp: Option<i64>,
     pub login_time: Option<DateTimeNative>,
     pub user_name: Option<String>,

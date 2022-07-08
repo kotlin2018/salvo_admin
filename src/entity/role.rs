@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
 // 角色表
-#[crud_table(table_name:role)]
+#[crud_table(table_name:sys_role)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct RoleEntity {
-    pub role_id: Option<u32>,
+    pub role_id: Option<Uuid>,
     pub role_name: Option<String>,
     pub role_key: Option<String>,
     pub list_order: Option<i32>,

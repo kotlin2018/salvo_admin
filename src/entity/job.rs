@@ -1,10 +1,10 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:job)]
+#[crud_table(table_name:sys_job)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct JobEntity {
-    pub job_id: Option<u32>,
+    pub job_id: Option<Uuid>,
     pub task_id: Option<u32>,
     pub task_count: Option<u64>,
     pub run_count: Option<u64>,

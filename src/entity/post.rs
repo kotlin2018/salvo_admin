@@ -1,10 +1,10 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:post)]
+#[crud_table(table_name:sys_post)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct PostEntity {
-    pub post_id: Option<u32>,
+    pub post_id: Option<Uuid>,
     pub post_code: Option<String>,
     pub post_name: Option<String>,
     pub post_sort: Option<i32>,

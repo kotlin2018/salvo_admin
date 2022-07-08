@@ -1,10 +1,10 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:operate_log)]
+#[crud_table(table_name:sys_operate_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct OperateLogEntity {
-    pub operate_id: Option<u32>,
+    pub operate_id: Option<Uuid>,
     pub time_id: Option<u32>,
     pub title: Option<String>,
     pub business_type: Option<String>,

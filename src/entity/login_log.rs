@@ -1,10 +1,10 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:login_log)]
+#[crud_table(table_name:sys_login_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct LoginLogEntity {
-    pub info_id: Option<u32>,
+    pub info_id: Option<Uuid>,
     pub login_name: Option<String>,
     pub net: Option<String>,
     pub ipaddr: Option<String>,

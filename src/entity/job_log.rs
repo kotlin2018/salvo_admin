@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:job_log)]
+#[crud_table(table_name:sys_job_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct JobLogEntity {
-    pub job_log_id: Option<u32>,
-    pub job_id: Option<u32>,
+    pub job_log_id: Option<Uuid>,
+    pub job_id: Option<Uuid>,
     pub lot_id: Option<u32>,
     pub lot_order: Option<i64>,
     pub job_name: Option<String>,

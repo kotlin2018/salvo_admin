@@ -1,11 +1,11 @@
-use rbatis::DateTimeNative;
+use rbatis::{DateTimeNative, Uuid};
 use salvo::http::headers::Date;
 use serde::{Serialize, Deserialize};
 
-#[crud_table(table_name:update_log)]
+#[crud_table(table_name:sys_update_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct UpdateLogEntity {
-    pub id: Option<u32>,
+    pub id: Option<Uuid>,
     pub app_version: Option<String>,
     pub backed_version: Option<String>,
     pub title: Option<String>,

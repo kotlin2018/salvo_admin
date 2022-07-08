@@ -13,8 +13,8 @@ use crate::dao::init_rbatis;
 
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: Search){
-  let rb = init_rbatis().await;
-    rb.
+  // let rb = init_rbatis().await;
+  //   rb.
 
 }
 

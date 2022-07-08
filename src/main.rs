@@ -2,7 +2,7 @@
 extern crate rbatis;
 use salvo::prelude::*;
 use crate::controller::init_router;
-use crate::dao::ApplicationConfig;
+use crate::dao::{ApplicationConfig, init_rbatis};
 
 mod dao;
 mod entity;
@@ -10,6 +10,7 @@ mod controller;
 
 #[tokio::main]
 async fn main() {
+    let rb = init_rbatis().await;
     let server_url = ApplicationConfig::default().server_url;
     tracing_subscriber::fmt::init();
     tracing::info!("Listening on {:?}",&server_url);//这里传 server_url 的引用

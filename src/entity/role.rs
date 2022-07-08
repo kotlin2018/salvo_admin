@@ -16,7 +16,7 @@ pub struct RoleEntity {
     pub updated_at: Option<DateTimeNative>,
 }
 
-impl Default for Role {
+impl Default for RoleEntity {
     fn default() -> Self {
         Self{
             role_id: None,

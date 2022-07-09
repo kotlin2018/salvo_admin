@@ -57,7 +57,6 @@ use serde::{Serialize, Deserialize};
 #[crud_table(table_name:sys_oper_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct OperateLogEntity {
-    #[crud_table(table_columns:)]
     pub oper_id: Option<Uuid>,
     pub time_id: Option<u32>,
     pub title: Option<String>,

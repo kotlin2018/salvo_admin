@@ -1,5 +1,8 @@
+use captcha_rust::Captcha;
 use salvo::prelude::*;
+use crate::controller::{encrypt_password, JsonResult};
 use crate::dao::{init_rbatis,request_data::SearchReq,request_data::PageParams};
+use crate::dao::response_data::CaptchaImageResp;
 
 // #[fn_handler]
 // pub async fn get_sort_list(page_params: PageParams,search: Search) ->Json<ListData<UserResp>>{
@@ -7,6 +10,23 @@ use crate::dao::{init_rbatis,request_data::SearchReq,request_data::PageParams};
 //
 //   Json(page_params)
 // }
+
+/// 获取验证码图片
+#[fn_handler]
+pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
+    let captcha = Captcha::new(4,130,40);
+    let uuid = encrypt_password(&captcha.text,"");
+    let data = CaptchaImageResp{
+        captcha_on_off: true,
+        uuid,
+        img: captcha.base_img,
+    };
+    Json(JsonResult{
+        code: Some(200),
+        msg: Some("success".to_string()),
+        data: Some(data),
+    })
+}
 
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: SearchReq){
@@ -16,17 +36,76 @@ pub async fn get_sort_list(page_params: PageParams,search: SearchReq){
 }
 
 #[fn_handler]
-pub async fn get_by_id(req: &mut Request){
+pub async fn get_by_id(req: &mut Request) -> &'static str{
+    "get_by_id"
 }
 
 #[fn_handler]
-pub async fn get_profile(req: &mut Request){
+pub async fn get_profile(req: &mut Request) -> &'static str{
+    "get_profile"
 }
 
-// #[fn_handler]
-// pub async fn get_profile(req: &mut Request) -> Json<T>{
-//   Json(None)
-// }
+
+#[fn_handler]
+pub async fn add_user(req: &mut Request) -> &'static str{
+    "add_user"
+}
+
+#[fn_handler]
+pub async fn delete_user(req: &mut Request) -> &'static str{
+    "delete_user"
+}
+
+#[fn_handler]
+pub async fn edit_user(req: &mut Request) -> &'static str{
+    "edit_user"
+}
+
+#[fn_handler]
+pub async fn update_profile(req: &mut Request) -> &'static str{
+    "update_profile"
+}
+
+#[fn_handler]
+pub async fn get_info(req: &mut Request) -> &'static str{
+    "get_info"
+}
+
+#[fn_handler]
+pub async fn reset_passwd(req: &mut Request) -> &'static str{
+    "reset_passwd"
+}
+
+#[fn_handler]
+pub async fn update_passwd(req: &mut Request) -> &'static str{
+    "update_passwd"
+}
+
+#[fn_handler]
+pub async fn change_status(req: &mut Request) -> &'static str{
+    "change_status"
+}
+
+#[fn_handler]
+pub async fn fresh_token(req: &mut Request) -> &'static str{
+    "fresh_token"
+}
+
+#[fn_handler]
+pub async fn change_role(req: &mut Request) -> &'static str{
+    "change_role"
+}
+
+#[fn_handler]
+pub async fn change_dept(req: &mut Request) -> &'static str{
+    "change_dept"
+}
+
+#[fn_handler]
+pub async fn update_avatar(req: &mut Request) -> &'static str{
+    "update_avatar"
+}
+
 
 
 

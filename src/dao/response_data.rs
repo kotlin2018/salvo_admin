@@ -26,3 +26,9 @@ pub struct UserAndDeptResp {
     pub status: Option<String>,
 }
 
+#[derive(Debug,Serialize,Deserialize)]
+pub struct CaptchaImageResp {
+    pub captcha_on_off: bool,
+    pub uuid: String,
+    pub img: String,
+}

@@ -21,7 +21,7 @@ impl Default for UpdateLogEntity {
         Self{
             id: None,
             app_version: None,
-            backed_version: None,
+            backend_version: None,
             title: None,
             content: None,
             created_at: None,

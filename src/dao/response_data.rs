@@ -32,3 +32,11 @@ pub struct CaptchaImageResp {
     pub uuid: String,
     pub img: String,
 }
+
+#[derive(Debug,Serialize,Deserialize)]
+pub struct AuthBodyResp {
+    pub token: String,
+    pub token_type: String,
+    pub exp: i64,
+    pub exp_in: i64,
+}

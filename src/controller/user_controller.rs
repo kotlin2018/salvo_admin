@@ -1,8 +1,13 @@
 use captcha_rust::Captcha;
+use rbatis::crud::CRUD;
 use salvo::prelude::*;
+use serde::de::Unexpected::Option;
 use crate::controller::{encrypt_password, JsonResult};
 use crate::dao::{init_rbatis,request_data::SearchReq,request_data::PageParams};
-use crate::dao::response_data::CaptchaImageResp;
+use crate::dao::request_data::UserLoginReq;
+use crate::dao::response_data::{AuthBodyResp, CaptchaImageResp};
+use crate::entity::user::UserEntity;
+use crate::Text::Js;
 
 // #[fn_handler]
 // pub async fn get_sort_list(page_params: PageParams,search: Search) ->Json<ListData<UserResp>>{
@@ -28,6 +33,36 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
     })
 }
 
+#[fn_handler]
+pub async fn login(login_req: UserLoginReq) -> Json<JsonResult<UserEntity>>{//-> Json<&mut JsonResult<AuthBodyResp>>
+    let mut msg = "登陆成功".to_string();
+    let mut status = "1".to_string();
+    if encrypt_password(&login_req.code,"") != login_req.uuid {
+        msg = "验证码错误".to_string();
+        status = "0".to_string();
+    }
+    let mut res = JsonResult{
+        code: None,
+        msg: None,
+        data: None
+    };
+    // 根据用户名获取用户信息
+    let rb = init_rbatis().await;
+    let user = rb.fetch_by_column::<UserEntity,_>("user_name", &login_req.user_name).await.expect("用户不存在");
+    if &user.user_status.unwrap() == "0" {
+        msg = "用户已经被禁用".to_string();
+        status = "0".to_string();
+        res.code = Some(400);
+        res.msg = Some(msg);
+        //res.data = Some(user);
+        Json(res)
+    }else {
+        res.code = Some(200);
+        res.msg = Some("success".to_string());
+        //res.data = Some(user);
+        Json(res)
+    }
+}
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: SearchReq){
   // let rb = init_rbatis().await;

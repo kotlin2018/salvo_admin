@@ -26,3 +26,12 @@ pub struct SearchReq {
     pub begin_time: Option<String>,
     pub end_time: Option<String>,
 }
+
+/// 用户登陆
+#[derive(Debug,Serialize,Deserialize,Extractible)]
+pub struct UserLoginReq {
+    pub user_name: String,
+    pub user_password: String,
+    pub code: String,
+    pub uuid: String,
+}

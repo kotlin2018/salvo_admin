@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 
 // 用户表
 #[crud_table(table_name:sys_user)]
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize,PartialEq)]
 pub struct UserEntity {
     pub id: Option<Uuid>,
     pub user_name: Option<String>,

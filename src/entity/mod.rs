@@ -1,22 +1,22 @@
-mod user;
-mod role;
-mod user_role;
-mod user_post;
-mod user_online;
-mod user_dept;
-mod update_log;
-mod role_dept;
-mod role_api;
-mod post;
-mod operate_log;
-mod menu;
-mod login_log;
-mod job_log;
-mod job;
-mod dict_type;
-mod dict_data;
-mod dept;
-mod api_db;
+pub mod user;
+pub mod role;
+pub mod user_role;
+pub mod user_post;
+pub mod user_online;
+pub mod user_dept;
+pub mod update_log;
+pub mod role_dept;
+pub mod role_api;
+pub mod post;
+pub mod operate_log;
+pub mod menu;
+pub mod login_log;
+pub mod job_log;
+pub mod job;
+pub mod dict_type;
+pub mod dict_data;
+pub mod dept;
+pub mod api_db;
 
 #[cfg(test)]
 mod test {

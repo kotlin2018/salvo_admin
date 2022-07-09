@@ -1,10 +1,6 @@
 use salvo::Router;
 use serde::{Deserialize, Serialize};
-use crate::controller::user_controller::
-{add_user, change_dept, change_role, change_status,
- delete_user, edit_user, fresh_token, get_by_id,
- get_captcha, get_info, get_profile, get_sort_list,
- reset_passwd, update_avatar, update_passwd, update_profile};
+use crate::controller::user_controller::{add_user, change_dept, change_role, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, update_avatar, update_passwd, update_profile};
 mod user_controller;
 mod role_controller;
 mod post_controller;
@@ -58,8 +54,10 @@ pub fn init_router() ->Router{
        // .path("")
        // .path("")
        // .path("")
-       // .path("")
-       .push(Router::new().path("api/comm/get_captcha").get(get_captcha));
+       .path("")
+       .push(Router::with_path("api/system/comm")
+           .push(Router::with_path("get_captcha").get(get_captcha))
+           .push(Router::with_path("login").post(login)));
    router
 }
 

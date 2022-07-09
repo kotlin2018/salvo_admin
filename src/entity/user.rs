@@ -2,10 +2,12 @@ use rbatis::{DateTimeNative,Uuid};
 use serde::{Serialize, Deserialize};
 
 // 用户表
-#[crud_table(table_name:sys_user)]
-#[derive(Debug,Serialize,Deserialize,PartialEq)]
+#[crud_table(table_name:"sys_user" | formats_mysql:"id:{}::uuid")]
+// #[crud_table(table_name:"sys_user")]
+#[derive(Debug,Serialize,Deserialize,PartialEq,Clone)]
 pub struct UserEntity {
-    pub id: Option<Uuid>,
+    // pub id: Option<Uuid>,
+    pub id: Option<String>,
     pub user_name: Option<String>,
     pub user_nickname: Option<String>,
     pub user_password: Option<String>,
@@ -14,8 +16,10 @@ pub struct UserEntity {
     pub user_email: Option<String>,
     pub sex: Option<String>,
     pub avatar: Option<String>,
-    pub role_id: Option<Uuid>,
-    pub dept_id: Option<Uuid>,
+    // pub role_id: Option<Uuid>,
+    // pub dept_id: Option<Uuid>,
+    pub role_id: Option<String>,
+    pub dept_id: Option<String>,
     pub remark: Option<String>,
     pub is_admin: Option<bool>,
     pub phone_num: Option<String>,

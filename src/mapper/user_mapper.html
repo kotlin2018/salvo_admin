@@ -40,4 +40,8 @@
         </where>
                 ${' '}order by u.id asc
     </select>
+
+    <select id="select_one">
+        select * from sys_user where user_name =#{name}
+    </select>
 </mapper>

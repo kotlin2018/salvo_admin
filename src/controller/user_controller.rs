@@ -48,18 +48,22 @@ pub async fn login(login_req: UserLoginReq) -> Json<JsonResult<UserEntity>>{//->
     };
     // 根据用户名获取用户信息
     let rb = init_rbatis().await;
-    let user = rb.fetch_by_column::<UserEntity,_>("user_name", &login_req.user_name).await.expect("用户不存在");
+    let w = rb.new_wrapper().eq("user_name", &login_req.user_name);
+    let user = rb.fetch_by_wrapper::<UserEntity>(w).await.unwrap();
+   //let user = rb.fetch_by_column::<UserEntity,_>("user_name", &login_req.user_name).await.unwrap();
+    let user1 = user.clone();
+    let user2 = user.clone();
     if &user.user_status.unwrap() == "0" {
         msg = "用户已经被禁用".to_string();
         status = "0".to_string();
         res.code = Some(400);
         res.msg = Some(msg);
-        //res.data = Some(user);
+        res.data = Some(user1);
         Json(res)
     }else {
         res.code = Some(200);
         res.msg = Some("success".to_string());
-        //res.data = Some(user);
+        res.data = Some(user2);
         Json(res)
     }
 }

@@ -29,6 +29,7 @@ pub struct SearchReq {
 
 /// 用户登陆
 #[derive(Debug,Serialize,Deserialize,Extractible)]
+#[extract(default_source(from = "body",format = "json"))]
 pub struct UserLoginReq {
     pub user_name: String,
     pub user_password: String,

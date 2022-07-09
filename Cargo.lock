@@ -60,6 +60,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.58"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
+
+[[package]]
 name = "arrayvec"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1749,9 +1755,9 @@ dependencies = [
 
 [[package]]
 name = "rbatis"
-version = "3.1.14"
+version = "3.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31b0d50d3613f9be2e2a3e9413da9629c45514ad397093f92a0f8f77978c41b6"
+checksum = "65a9dadaed6cc3a87c888cdd1cb0ba39c11d9c9adc421f8a9ada94eb3fe3fb18"
 dependencies = [
  "async-trait",
  "chrono",
@@ -1771,9 +1777,9 @@ dependencies = [
 
 [[package]]
 name = "rbatis-core"
-version = "3.1.10"
+version = "3.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "886eebf2bb1390ce5e256e5a05c4c4a0462b5584e7ce0bae16baad508eee3bb0"
+checksum = "c6324adca27a8b4f1fb5e98b8cfd08d91cf3c5007d1c1c24651234004e585123"
 dependencies = [
  "base64 0.13.0",
  "bigdecimal",
@@ -2001,6 +2007,7 @@ dependencies = [
 name = "salvo_admin"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "captcha_rust",
  "fast_log",
  "md5",

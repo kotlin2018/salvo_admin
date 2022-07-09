@@ -1,8 +1,5 @@
 use salvo::prelude::*;
-use crate::controller::ListData;
-use crate::controller::request_data::{PageParams, Search};
-use crate::controller::response_data::UserResp;
-use crate::dao::init_rbatis;
+use crate::dao::{init_rbatis,request_data::SearchReq,request_data::PageParams};
 
 // #[fn_handler]
 // pub async fn get_sort_list(page_params: PageParams,search: Search) ->Json<ListData<UserResp>>{
@@ -12,9 +9,9 @@ use crate::dao::init_rbatis;
 // }
 
 #[fn_handler]
-pub async fn get_sort_list(page_params: PageParams,search: Search){
-  let rb = init_rbatis().await;
-    rb.
+pub async fn get_sort_list(page_params: PageParams,search: SearchReq){
+  // let rb = init_rbatis().await;
+  //   rb.
 
 }
 

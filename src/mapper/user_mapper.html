@@ -1,24 +1,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://github.com/rbatis/rbatis_sql/raw/main/mybatis-3-mapper.dtd">
 <mapper>
     <select id="get_sort_list">
-        select * from
+        select u.*,d.*
+        from sys_user u
+        left join sys_dept d on d.dept_id = u.dept_id
         <where>
-            <if test="name != ''">
-                and name like #{name}
+                u.deleted_at is null
+            <if test="sql_arg.user_id !=null">
+                and u.id =#{sql_arg.user_id}
             </if>
-            <if test="dt.inner() >= '2009-12-12T00:00:00'">
-                and create_time < #{dt.inner()}
+
+            <if test="sql_arg.user_ids != null">
+                and u.id in #{sql_arg.user_ids}
             </if>
-            <choose>
-                <when test="true">
-                    and id != -1
-                </when>
-                <otherwise>and id != -2</otherwise>
-            </choose>
-            and
-            <trim prefixOverrides="and">
-                and name != ''
-            </trim>
+
+            <if test="sql_arg.user_name !=null">
+                and u.user_name =#{sql_arg.user_name}
+            </if>
+
+            <if test="sql_arg.phone_num !=null">
+                and u.phone_num =#{sql_arg.phone_num}
+            </if>
+
+            <if test="sql_arg.user_status !=null">
+                and u.user_status =#{sql_arg.user_status}
+            </if>
+
+            <if test="sql_arg.dept_id !=null">
+                and u.dept_id =#{sql_arg.dept_id}
+            </if>
+
+            <if test="sql_arg.begin_time !=null">
+                and u.created_at >=#{sql_arg.begin_time}
+            </if>
+
+            <if test="sql_arg.end_time!=null">
+                and u.created_at <=#{sql_arg.end_time}
+            </if>
         </where>
+                ${' '}order by u.id asc
     </select>
 </mapper>

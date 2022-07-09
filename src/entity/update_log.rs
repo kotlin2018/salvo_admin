@@ -7,7 +7,7 @@ use serde::{Serialize, Deserialize};
 pub struct UpdateLogEntity {
     pub id: Option<Uuid>,
     pub app_version: Option<String>,
-    pub backed_version: Option<String>,
+    pub backend_version: Option<String>,
     pub title: Option<String>,
     pub content: Option<String>,
     pub created_at: Option<DateTimeNative>,

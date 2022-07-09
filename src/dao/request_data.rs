@@ -14,7 +14,7 @@ pub struct PageParams {
 
 #[derive(Debug,Serialize,Deserialize,Extractible)]
 #[extract(default_source(from = "query"))]
-pub struct Search {
+pub struct SearchReq {
     pub user_id: Option<String>,
     pub role_id: Option<String>,
     pub user_ids: Option<Vec<String>>,
@@ -22,6 +22,7 @@ pub struct Search {
     pub phone_num: Option<String>,
     pub user_nickname: Option<String>,
     pub user_status: Option<String>,
+    pub dept_id: Option<String>,
     pub begin_time: Option<String>,
     pub end_time: Option<String>,
 }

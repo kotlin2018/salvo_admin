@@ -9,9 +9,6 @@ use crate::entity::user::UserEntity;
 #[html_sql("./src/mapper/user_mapper.html")]
 pub async fn get_sort_list(rb: &mut RbatisExecutor<'_,'_>,page_req: &PageRequest,sql_arg: &SearchReq) -> Page<UserAndDeptResp>{impled!()}
 
-#[html_sql("./src/mapper/user_mapper.html")]
-pub async fn select_one(mut rb: RbatisExecutor<'_,'_>,name: &str) -> UserEntity {impled!()}
-
 #[py_sql("select * from sys_user where user_name =#{name}")]
 pub async fn fetch_one(mut rb: Rbatis,name: &str) -> UserEntity{impled!()}
 
@@ -20,7 +17,7 @@ mod test{
     use rbatis::crud::CRUD;
     use rbatis::{DateTimeNative, PageRequest, Uuid};
     use crate::dao::request_data::SearchReq;
-    use crate::dao::user_mapper::{fetch_one, get_sort_list, select_one};
+    use crate::dao::user_mapper::{fetch_one, get_sort_list};
     use crate::entity::user::UserEntity;
     use crate::init_rbatis;
 
@@ -56,28 +53,7 @@ mod test{
     }
 
     #[tokio::test]
-    async fn test(){
-        fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
-        let rb = init_rbatis().await;
-        let params = SearchReq{
-            user_id: Some("00TV87DDOBJPU75J4TGUOC3NNG".to_string()),
-            role_id: None,
-            user_ids: None,
-            user_name: None,
-            phone_num: None,
-            user_nickname: None,
-            user_status: None,
-            dept_id: None,
-            begin_time: None,
-            end_time: None
-        };
-        let res = get_sort_list(&mut rb.as_executor(),
-                                &PageRequest::new(1,10),&params).await;
-        println!("{:?}",res);
-    }
-
-    #[tokio::test]
-    async fn test02(){
+    async fn test_wrapper(){
         fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
         let rb = init_rbatis().await;
         let user_name = "admin";
@@ -87,18 +63,10 @@ mod test{
     }
 
     #[tokio::test]
-    async fn test03(){
+    async fn test_py_sql(){
         fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
         let rb = init_rbatis().await;
         let user = fetch_one(rb,"admin").await;
-        println!("{:?}",user);
-    }
-
-    #[tokio::test]
-    async fn test04(){
-        fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
-        let rb = init_rbatis().await;
-        let user = select_one(rb.as_executor(),"admin").await;
         println!("{:?}",user);
     }
 }

@@ -6,7 +6,7 @@ use serde::{Serialize, Deserialize};
 // #[crud_table(table_name:"sys_user")]
 #[derive(Debug,Serialize,Deserialize,PartialEq,Clone)]
 pub struct UserEntity {
-    // pub id: Option<Uuid>,
+    // pub id: Option<Uuid>, // 使用Uuid会报错，推荐使用 String
     pub id: Option<String>,
     pub user_name: Option<String>,
     pub user_nickname: Option<String>,

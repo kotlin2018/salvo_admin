@@ -1,13 +1,14 @@
 use captcha_rust::Captcha;
-use rbatis::crud::CRUD;
 use salvo::prelude::*;
-use serde::de::Unexpected::Option;
-use crate::controller::{encrypt_password, JsonResult};
-use crate::dao::{init_rbatis,request_data::SearchReq,request_data::PageParams};
-use crate::dao::request_data::UserLoginReq;
-use crate::dao::response_data::{AuthBodyResp, CaptchaImageResp};
+use anyhow::{anyhow, Ok, Result};
+use crate::controller::JsonResult;
+use crate::dao::init_rbatis;
+use crate::dto::request_data::UserLoginReq;
+use crate::dto::response_data::{AuthBodyResp, CaptchaImageResp};
+use crate::dto::request_data::{PageParams, SearchReq};
 use crate::entity::user::UserEntity;
-use crate::Text::Js;
+use crate::service::user::encrypt_password;
+
 
 // #[fn_handler]
 // pub async fn get_sort_list(page_params: PageParams,search: Search) ->Json<ListData<UserResp>>{
@@ -34,7 +35,7 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 }
 
 #[fn_handler]
-pub async fn login(login_req: UserLoginReq) -> Json<JsonResult<UserEntity>>{//-> Json<&mut JsonResult<AuthBodyResp>>
+pub async fn login(login_req: UserLoginReq) -> Result<Json<JsonResult<UserEntity>>>{
     let mut msg = "登陆成功".to_string();
     let mut status = "1".to_string();
     if encrypt_password(&login_req.code,"") != login_req.uuid {
@@ -46,26 +47,7 @@ pub async fn login(login_req: UserLoginReq) -> Json<JsonResult<UserEntity>>{//->
         msg: None,
         data: None
     };
-    // 根据用户名获取用户信息
-    let rb = init_rbatis().await;
-    let w = rb.new_wrapper().eq("user_name", &login_req.user_name);
-    let user = rb.fetch_by_wrapper::<UserEntity>(w).await.unwrap();
-   //let user = rb.fetch_by_column::<UserEntity,_>("user_name", &login_req.user_name).await.unwrap();
-    let user1 = user.clone();
-    let user2 = user.clone();
-    if &user.user_status.unwrap() == "0" {
-        msg = "用户已经被禁用".to_string();
-        status = "0".to_string();
-        res.code = Some(400);
-        res.msg = Some(msg);
-        res.data = Some(user1);
-        Json(res)
-    }else {
-        res.code = Some(200);
-        res.msg = Some("success".to_string());
-        res.data = Some(user2);
-        Json(res)
-    }
+
 }
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: SearchReq){

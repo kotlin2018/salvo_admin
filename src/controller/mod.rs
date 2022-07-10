@@ -1,25 +1,15 @@
 use salvo::Router;
 use serde::{Deserialize, Serialize};
-use crate::controller::user_controller::{add_user, change_dept, change_role, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, update_avatar, update_passwd, update_profile};
-mod user_controller;
-mod role_controller;
-mod post_controller;
-mod oper_log_controller;
-mod menu_controller;
-mod login_log_controller;
-
+use crate::controller::user::{add_user, change_dept, change_role, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, update_avatar, update_passwd, update_profile};
+mod user;
+mod role;
+mod post;
+mod oper;
+mod menu;
+mod login_log;
 use salvo::prelude::*;
 use tracing::subscriber::with_default;
 
-#[fn_handler]
-pub async fn hello() -> &'static str{
-    "hello world"
-}
-
-#[fn_handler]
-pub async fn world() -> &'static str{
-    "aaaaaaaaaaaaaaa"
-}
 // 初始化路由
 pub fn init_router() ->Router{
    let  router = Router::new()
@@ -74,16 +64,4 @@ pub struct ListData<T>{
     pub total: usize,
     pub total_pages: usize,
     pub page_num: usize,
-}
-
-/// 秘密加密
-pub fn encrypt_password(password: &str,salt: &str) -> String{
-    use std::fmt::Write;
-    let s = password.to_owned() + salt;
-    let digest = md5::compute(s).to_vec();
-    let mut result = String::new();
-    for a in digest.iter(){
-        write!(result,"{:02x}",a).unwrap();
-    }
-    result
 }

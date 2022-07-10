@@ -1,6 +1,4 @@
 pub mod user_mapper;
-pub mod request_data;
-pub mod response_data;
 
 use once_cell::sync::Lazy;
 use rbatis::logic_delete::RbatisLogicDeletePlugin;

@@ -2,8 +2,8 @@ use rbatis::{Page, PageRequest};
 use rbatis::executor::RbatisExecutor;
 use rbatis::rbatis::Rbatis;
 use rbson::Bson;
-use crate::dao::request_data::SearchReq;
-use crate::dao::response_data::{UserAndDeptResp};
+use crate::dto::request_data::SearchReq;
+use crate::dto::response_data::{UserAndDeptResp};
 use crate::entity::user::UserEntity;
 
 #[html_sql("./src/mapper/user_mapper.html")]
@@ -16,7 +16,7 @@ pub async fn fetch_one(mut rb: Rbatis,name: &str) -> UserEntity{impled!()}
 mod test{
     use rbatis::crud::CRUD;
     use rbatis::{DateTimeNative, PageRequest, Uuid};
-    use crate::dao::request_data::SearchReq;
+    use crate::dto::request_data::SearchReq;
     use crate::dao::user_mapper::{fetch_one, get_sort_list};
     use crate::entity::user::UserEntity;
     use crate::init_rbatis;

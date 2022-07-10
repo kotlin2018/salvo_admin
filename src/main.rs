@@ -7,7 +7,8 @@ use crate::dao::{ApplicationConfig, init_rbatis};
 mod dao;
 mod entity;
 mod controller;
-mod util;
+mod service;
+mod dto;
 
 #[tokio::main]
 async fn main() {

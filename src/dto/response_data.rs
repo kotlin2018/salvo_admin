@@ -40,3 +40,23 @@ pub struct AuthBodyResp {
     pub exp: i64,
     pub exp_in: i64,
 }
+
+#[derive(Debug,Serialize,Deserialize,Clone)]
+pub struct ClientNetResp {
+    pub ip: String,
+    pub location: String,
+    pub net_work: String,
+}
+
+#[derive(Debug,Serialize,Deserialize,Clone)]
+pub struct UserAgentResp{
+    pub browser: String,
+    pub os: String,
+    pub device: String,
+}
+
+#[derive(Debug,Serialize,Deserialize,Clone)]
+pub struct ClientResp {
+    pub net: ClientNetResp,
+    pub ua: UserAgentResp,
+}

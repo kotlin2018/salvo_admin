@@ -1405,6 +1405,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "18a6dbe30758c9f83eb00cbea4ac95966305f5a7772f3f42ebfc7fc7eddbd8e1"
 
 [[package]]
+name = "onig"
+version = "6.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1eb3502504c9c8b06634b38bfdda86a9a8cef6277f3dec4d8b17c115110dd2a3"
+dependencies = [
+ "bitflags",
+ "lazy_static",
+ "libc",
+ "onig_sys",
+]
+
+[[package]]
+name = "onig_sys"
+version = "69.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8bf3fbc9b931b6c9af85d219c7943c274a6ad26cff7488a2210215edd5f49bf8"
+dependencies = [
+ "cc",
+ "pkg-config",
+]
+
+[[package]]
 name = "opaque-debug"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2021,6 +2043,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "user-agent-parser",
  "yaml-rust",
 ]
 
@@ -2798,6 +2821,16 @@ dependencies = [
  "idna",
  "matches",
  "percent-encoding",
+]
+
+[[package]]
+name = "user-agent-parser"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5cf5aad4c90463d8c3de3bfa012c1f3723261498a99fb6825a5fa1e36bf3fb6f"
+dependencies = [
+ "onig",
+ "yaml-rust",
 ]
 
 [[package]]

@@ -27,6 +27,10 @@ pub struct ApplicationConfig{
     // 登陆失败重试
     pub login_fail_replay: i64,
     pub login_fail_retry_wait_sec: i64,
+    // 超级管理员账号
+    pub super_user: Vec<String>,
+    // user agent 解析
+    pub user_agent_parser: String,
 }
 
 // 默认配置(默认实现)
@@ -55,6 +59,8 @@ impl Default for ApplicationConfig{
             cache_type: get_cfg(&docs,"cache_type").as_str().unwrap_or("").to_owned(),
             login_fail_replay: get_cfg(&docs,"login_fail_retry").as_i64().unwrap_or(0).to_owned(),
             login_fail_retry_wait_sec: get_cfg(&docs,"login_fail_retry_wait_sec").as_i64().unwrap_or(0).to_owned(),
+            super_user: to_vec_string(get_cfg(&docs,"super_user").as_vec().unwrap_or(&vec![]).to_vec()),
+            user_agent_parser: get_cfg(&docs,"user_agent_parser").as_str().unwrap_or("").to_owned(),
         };
         if result.debug {
             println!("[abs_admin] debug_mode is enable!")

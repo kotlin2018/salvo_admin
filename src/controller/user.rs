@@ -1,13 +1,12 @@
 use captcha_rust::Captcha;
 use salvo::prelude::*;
-use anyhow::{anyhow, Ok, Result};
 use crate::controller::JsonResult;
 use crate::dao::init_rbatis;
 use crate::dto::request_data::UserLoginReq;
 use crate::dto::response_data::{AuthBodyResp, CaptchaImageResp};
 use crate::dto::request_data::{PageParams, SearchReq};
 use crate::entity::user::UserEntity;
-use crate::service::user::encrypt_password;
+use crate::service::user::{encrypt_password, user_login};
 
 
 // #[fn_handler]
@@ -35,18 +34,17 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 }
 
 #[fn_handler]
-pub async fn login(login_req: UserLoginReq) -> Result<Json<JsonResult<UserEntity>>>{
-    let mut msg = "登陆成功".to_string();
-    let mut status = "1".to_string();
-    if encrypt_password(&login_req.code,"") != login_req.uuid {
-        msg = "验证码错误".to_string();
-        status = "0".to_string();
-    }
-    let mut res = JsonResult{
-        code: None,
-        msg: None,
-        data: None
-    };
+pub async fn login(login_req: UserLoginReq,req: &mut Request){//Json<JsonResult<UserEntity>>
+
+
+    user_login(login_req,req).await;
+
+
+    // let mut res = JsonResult{
+    //     code: None,
+    //     msg: None,
+    //     data: None
+    // };
 
 }
 #[fn_handler]

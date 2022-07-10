@@ -28,3 +28,4 @@ md5 = "0.7"
 rand = "0.8"
 # 处理错误
 anyhow = "1"
+user-agent-parser = "0.3"

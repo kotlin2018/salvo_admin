@@ -37,6 +37,12 @@ login_fail_retry: 3
 login_fail_retry_wait_sec: 30
 
 
+#超级管理员账号
+super_user: ""
+#user_agent 解析
+user_agent_parser: "regexes.yaml"
+
+
 
 #接口白名单（免登陆直接访问）
 white_list_api:

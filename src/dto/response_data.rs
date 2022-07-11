@@ -15,7 +15,6 @@ pub struct UserAndDeptResp {
     pub is_admin: Option<bool>,
     pub phone_num: Option<String>,
     pub created_at: Option<DateTimeNative>,
-
     pub dept_id: Option<String>,
     pub parent_id: Option<String>,
     pub dept_name: Option<String>,

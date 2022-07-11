@@ -24,6 +24,7 @@ use rbatis::rbatis::Rbatis;
 use yaml_rust::{Yaml, YamlLoader};
 
 // 服务启动配置
+#[derive(Debug,Clone)]
 pub struct ApplicationConfig{
     pub debug: bool,
     pub server_url: String,

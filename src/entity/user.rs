@@ -65,10 +65,10 @@ impl UserEntity {
     pub async fn get_sort_list(rb: &mut RbatisExecutor<'_,'_>,page_req: &PageRequest,sql_arg: &SearchReq) -> Page<UserAndDeptResp>{impled!()}
 
     #[py_sql("select * from sys_user where user_name =#{name}")]
-    pub async fn fetch_one(mut rb: Rbatis,name: &str) -> UserEntity{impled!()}
+    pub async fn fetch_one(rb: &Rbatis,name: &str) -> UserEntity{impled!()}
 
     #[html_sql("./src/mapper/user_mapper.html")]
-    pub async fn get_by_id(mut rb: Rbatis,user_id: &str) -> UserAndDeptResp {impled!()}
+    pub async fn get_by_id(rb: &Rbatis,user_id: &str) -> UserAndDeptResp {impled!()}
 }
 
 #[cfg(test)]
@@ -76,7 +76,6 @@ mod test{
     use rbatis::crud::CRUD;
     use rbatis::{DateTimeNative, PageRequest, Uuid};
     use crate::dto::request_data::SearchReq;
-    use crate::dao::user_mapper::{fetch_one, get_sort_list};
     use crate::entity::user::UserEntity;
     use crate::init_rbatis;
 
@@ -125,8 +124,10 @@ mod test{
     async fn test_py_sql(){
         fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
         let rb = init_rbatis().await;
-        let user = UserEntity::fetch_one(rb,"admin").await;
-        println!("{:?}",user);
+        let user = UserEntity::fetch_one(&rb,"admin").await;
+        println!("user = {:?}",user);
+        let user2 = UserEntity::fetch_one(&rb,"admin").await;
+        println!("user2 = {:?}",user2);
     }
 }
 

@@ -2,12 +2,14 @@ use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::Error;
 use std::ptr::null;
+use std::rc::Rc;
 use anyhow::{Result, Ok, anyhow};
 use chrono::{Duration, Local};
 use fast_log::init;
 use jsonwebtoken::{encode, EncodingKey, Header};
 use rbatis::crud::{CRUD, CRUDMut};
 use rbatis::DateTimeNative;
+use rbatis::executor::RBatisTxExecutor;
 use salvo::hyper::body::Buf;
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
@@ -15,6 +17,7 @@ use crate::dto::request_data::{AuthPayload, Claims, UserLoginReq};
 use crate::dto::response_data::{AuthBodyResp, ClientNetResp, ClientResp, UserAgentResp};
 use crate::{ApplicationConfig, init_rbatis, Request};
 use crate::entity::dept::DeptEntity;
+use crate::entity::login_log::LoginLogEntity;
 use crate::entity::user::UserEntity;
 use crate::entity::user_online::UserOnlineEntity;
 
@@ -101,22 +104,12 @@ pub async fn set_login_info(
     // 写入登陆日志
     if status == "1"{
         if let(Some(token_id),Some(token)) = (token_id,token){
-
+            //user_online_add(client,uid,token_id,token.clone().exp).await;
         }
-    }
-
-
-
-
-
-
-
-    // let xff:Option<String> = req.header("X-Forwarded-For");
-    // let ip = match xff {
-    //     Some(x) => {
-    //         let mut ips = x.to_str
-    //     }
-    // }
+    };
+    // tokio::spawn(async move {
+    //     login_log_add(client.clone(),user,msg,status.clone()).await;
+    // });
 }
 
 /// 将从请求头中获取的 user-agent 解析成 UserAgentResp 对象
@@ -184,38 +177,61 @@ pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBody
     Ok(AuthBodyResp{
         token: token + &token_id,
         token_type: "Bearer".to_string(),
-        exp: cfg.jwt_expire,
-        exp_in: cfg.jwt_expire
+        exp: cfg.clone().jwt_expire,
+        exp_in: cfg.clone().jwt_expire
     })
 }
 
-/// 使用 Rbatis 的普通事务
-pub async fn add(req: ClientResp,uid: String,token_id: String,token_exp: i64) {
-    let u_id = scru128::scru128().to_string();
+// 使用 Rbatis 的普通事务
+// pub async fn user_online_add(req: ClientResp,uid: String,token_id: String,token_exp: i64) {
+//     let u_id = scru128::scru128().to_string();
+//     let now = DateTimeNative::now();
+//     let rb = init_rbatis().await;
+//     // 使用 html_sql 属性宏
+//     let user = UserEntity::get_by_id(&rb,&uid).await;
+//     // 使用 Wrapper 包装器
+//     let w = rb.new_wrapper().eq("deleted_at","null").eq("dept_id",user.dept_id.unwrap());
+//     let dept = rb.fetch_by_wrapper::<DeptEntity>(w).await.unwrap();
+//     // 使用普通事务
+//     let mut tx = rb.acquire_begin().await.expect("初始化事务句柄失败");
+//     let user_online = UserOnlineEntity {
+//         id: Some(u_id.clone()),
+//         u_id: Some(uid),
+//         token_id: Some(token_id),
+//         token_exp: Some(token_exp),
+//         login_time: Some(now),
+//         user_name: user.user_name.clone(),
+//         dept_name: dept.dept_name.clone(),
+//         net: Some(req.net.net_work),
+//         ipaddr: Some(req.net.ip),
+//         login_location: Some(req.net.location),
+//         device: Some(req.ua.device),
+//         browser: Some(req.ua.browser),
+//         os: Some(req.ua.os)
+//     };
+//     tx.save(&user_online,&[]);
+//     tx.commit().await.unwrap();
+// }
+
+pub async fn login_log_add(req: ClientResp,user: String,msg: String,status: String){
+    let uid = scru128::scru128().to_string();
     let now = DateTimeNative::now();
-    let rb = init_rbatis().await;
-    // 使用 html_sql 属性宏
-    let user = UserEntity::get_by_id(rb,&uid).await;
-    // 使用 Wrapper 包装器
-    let w = rb.new_wrapper().eq("deleted_at","null").eq("dept_id",user.dept_id);
-    let dept = rb.fetch_by_wrapper::<DeptEntity>((w)).await.unwrap();
-    // 使用普通事务
-    let mut tx = rb.acquire_begin().await.unwrap();
-    let user_online = UserOnlineEntity {
-        id: Some(u_id.clone()),
-        u_id: Some(uid),
-        token_id: Some(token_id),
-        token_exp: Some(token_exp),
-        login_time: Some(now),
-        user_name: user.user_name.clone(),
-        dept_name: dept.dept_name.clone(),
+    let login_log = LoginLogEntity{
+        info_id: Some(uid.clone()),
+        login_name: Some(user),
         net: Some(req.net.net_work),
         ipaddr: Some(req.net.ip),
         login_location: Some(req.net.location),
-        device: Some(req.ua.device),
         browser: Some(req.ua.browser),
-        os: Some(req.ua.os)
+        os: Some(req.ua.os),
+        device: Some(req.ua.device),
+        status: Some(status),
+        msg: Some(msg),
+        login_time: Some(now),
+        module: Some("后台系统".to_string())
     };
-    tx.save(&user_online);
-    tx.commit().await.unwrap();
+    let rb = init_rbatis().await;
+    let mut tx: RBatisTxExecutor = rb.acquire_begin().await.expect("初始化事务句柄失败");
+    tx.save(&login_log,&[]);
+    tx.commit();
 }

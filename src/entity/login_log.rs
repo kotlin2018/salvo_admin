@@ -4,7 +4,7 @@ use serde::{Serialize, Deserialize};
 #[crud_table(table_name:sys_login_log)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct LoginLogEntity {
-    pub info_id: Option<Uuid>,
+    pub info_id: Option<String>,
     pub login_name: Option<String>,
     pub net: Option<String>,
     pub ipaddr: Option<String>,

@@ -28,6 +28,9 @@ log_level: "info"
 cache_type: "mem"#"redis"
 #JwtToken秘钥
 jwt_secret: "abs_admin"
+# JwtToken过期时间
+jwt_expire: 14400 # 10天 14400
+
 #短信通道redis缓存（系统先把数据放入redis队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
 sms_redis_send_key_prefix: "sms:send:"
 #登陆错误重试可以简单的办法拒绝大量恶意登陆
@@ -36,13 +39,10 @@ login_fail_retry: 3
 #登陆失败重试次数限制超过后提示的等待时间（秒）
 login_fail_retry_wait_sec: 30
 
-
 #超级管理员账号
 super_user: ""
 #user_agent 解析
 user_agent_parser: "regexes.yaml"
-
-
 
 #接口白名单（免登陆直接访问）
 white_list_api:

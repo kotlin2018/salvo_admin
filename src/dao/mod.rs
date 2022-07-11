@@ -22,6 +22,7 @@ pub struct ApplicationConfig{
     pub log_level: String,
     pub sms_redis_send_key_prefix: String,
     pub jwt_secret: String,
+    pub jwt_expire: i64,
     pub white_list_api: Vec<String>,
     pub cache_type: String,
     // 登陆失败重试
@@ -55,6 +56,7 @@ impl Default for ApplicationConfig{
             log_level: get_cfg(&docs,"log_level").as_str().unwrap_or("").to_owned(),
             sms_redis_send_key_prefix: get_cfg(&docs,"sms_redis_send_key_prefix").as_str().unwrap_or("").to_owned(),
             jwt_secret: get_cfg(&docs,"jwt_secret").as_str().unwrap_or("").to_owned(),
+            jwt_expire: get_cfg(&docs,"jwt_expire").as_i64().unwrap_or(0).to_owned(),
             white_list_api: to_vec_string(get_cfg(&docs,"white_list_api").as_vec().unwrap().to_vec()),
             cache_type: get_cfg(&docs,"cache_type").as_str().unwrap_or("").to_owned(),
             login_fail_replay: get_cfg(&docs,"login_fail_retry").as_i64().unwrap_or(0).to_owned(),

@@ -33,12 +33,24 @@ pub struct CaptchaImageResp {
     pub img: String,
 }
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize,Clone)]
 pub struct AuthBodyResp {
     pub token: String,
     pub token_type: String,
     pub exp: i64,
     pub exp_in: i64,
+}
+
+/// AuthBodyResp 必须实现 Default, 它的对象才能调用 unwrap_or_default()
+impl Default for AuthBodyResp {
+    fn default() -> Self {
+        Self{
+            token: "".to_string(),
+            token_type: "".to_string(),
+            exp: 0,
+            exp_in: 0
+        }
+    }
 }
 
 #[derive(Debug,Serialize,Deserialize,Clone)]

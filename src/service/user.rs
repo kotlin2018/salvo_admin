@@ -1,6 +1,9 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::fmt::Error;
 use anyhow::{Result, Ok, anyhow};
+use chrono::{Duration, Local};
+use jsonwebtoken::{encode, EncodingKey, Header};
 use rbatis::crud::CRUD;
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
@@ -55,25 +58,24 @@ pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<Aut
         set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
         return Err(anyhow!("密码不正确"));
     }
-
     // 注册 JWT
     let claims = AuthPayload {
         id: user.id.clone().unwrap(),
         name: login_req.user_name.clone()
     };
     let token_id = scru128_string();
-    //let token =
-
-
-
-
-
-    Ok(AuthBodyResp{
-        token: "".to_string(),
-        token_type: "".to_string(),
-        exp: 0,
-        exp_in: 0
-    })
+    let token = authorize(claims.clone(),token_id.clone()).await.unwrap_or_default();
+    // 成功登陆后写入登陆日志
+    set_login_info(
+        req,
+        user.id.unwrap().to_string(),
+        login_req.user_name.clone(),
+        msg.clone(),
+        status.clone(),
+        Some(token_id),
+        Some(token.clone())
+    ).await;
+    Ok(token)
 }
 
 pub async fn set_login_info(
@@ -156,11 +158,26 @@ pub async fn get_city_by_ip(ip: &str) -> Result<ClientNetResp> {
     })
 }
 
-// 身份认证
-// pub fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBodyResp>{
-//     if payload.id.is_empty() || payload.name.is_empty() {
-//
-//     }
-//
-//     Ok()
-// }
+/// 身份认证
+pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBodyResp>{
+    if payload.id.is_empty() || payload.name.is_empty() {
+        return Err(anyhow!("Missing credentials"))
+    }
+    let cfg = ApplicationConfig::default();
+    let iat = Local::now(); // chrono 时间库中的函数
+    let exp = iat + Duration::minutes(cfg.jwt_expire);
+    let claims = Claims{
+        id: payload.id.to_string(),
+        token_id: token_id.clone(),
+        name: payload.name,
+        exp: exp.timestamp()
+    };
+    // 这是 jsonwebtoken 中的函数
+    let token = encode(&Header::default(),&claims, &EncodingKey::from_secret(cfg.jwt_secret.as_ref())).unwrap_or_default();
+    Ok(AuthBodyResp{
+        token: token + &token_id,
+        token_type: "Bearer".to_string(),
+        exp: cfg.jwt_expire,
+        exp_in: cfg.jwt_expire
+    })
+}

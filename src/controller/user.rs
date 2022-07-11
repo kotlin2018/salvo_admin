@@ -37,7 +37,8 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 pub async fn login(login_req: UserLoginReq,req: &mut Request){//Json<JsonResult<UserEntity>>
 
 
-    user_login(login_req,req).await;
+    let res = user_login(login_req,req).await;
+    println!("result {:?}",res);
 
 
     // let mut res = JsonResult{

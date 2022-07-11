@@ -1,9 +1,13 @@
 use std::borrow::Cow;
+use std::collections::HashMap;
 use anyhow::{Result, Ok, anyhow};
+use rbatis::crud::CRUD;
+use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
-use crate::dto::request_data::UserLoginReq;
-use crate::dto::response_data::{AuthBodyResp, UserAgentResp};
+use crate::dto::request_data::{AuthPayload, Claims, UserLoginReq};
+use crate::dto::response_data::{AuthBodyResp, ClientNetResp, ClientResp, UserAgentResp};
 use crate::{ApplicationConfig, init_rbatis, Request};
+use crate::entity::user::UserEntity;
 
 /// 秘密加密
 pub fn encrypt_password(password: &str,salt: &str) -> String{
@@ -25,30 +29,51 @@ pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<Aut
         msg = "验证码错误".to_string();
         status = "0".to_string();
         set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(),None,None).await;
-        Err(anyhow!(msg))
+        return Err(anyhow!(msg))
     }
 
     // 根据用户名获取用户信息
-    // let rb = init_rbatis().await;
-    // let w = rb.new_wrapper().eq("user_name", &login_req.user_name);
-    // let user = rb.fetch_by_wrapper::<UserEntity>(w).await.unwrap();
-    // //let user = rb.fetch_by_column::<UserEntity,_>("user_name", &login_req.user_name).await.unwrap();
-    // let user1 = user.clone();
-    // let user2 = user.clone();
-    // if &user.user_status.unwrap() == "0" {
-    //     msg = "用户已经被禁用".to_string();
-    //     status = "0".to_string();
-    //     res.code = Some(400);
-    //     res.msg = Some(msg);
-    //     res.data = Some(user1);
-    //     Json(res)
-    // }else {
-    //     res.code = Some(200);
-    //     res.msg = Some("success".to_string());
-    //     res.data = Some(user2);
-    //     Json(res)
-    // }
-    Ok()
+    let rb = init_rbatis().await;
+    let user = rb.fetch_by_column::<UserEntity, _>("user_name", &login_req.user_name).await.unwrap();
+    if user.id.is_none(){
+        msg = "用户不存在".to_string();
+        status = "0".to_string();
+        set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
+        return Err(anyhow!(msg))
+    }else if &user.user_status.unwrap() == "0"{
+        msg = "用户已被禁用".to_string();
+        status = "0".to_string();
+        // set_login_info 传 &login_req.user_name 会报错，只能传 login_req.user_name 对象
+        set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(), None, None).await;
+        return Err(anyhow!(msg))
+    }
+
+    // 验证密码是否正确
+    if encrypt_password(&login_req.user_password,&user.user_salt.unwrap()) != user.user_password.unwrap() {
+        msg = "密码错误".to_string();
+        status = "0".to_string();
+        set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
+        return Err(anyhow!("密码不正确"));
+    }
+
+    // 注册 JWT
+    // let claims = AuthPayload {
+    //     id: user.id.clone().unwrap(),
+    //     name: login_req.user_name.clone()
+    // };
+    // let token_id = scru128_string();
+    // let token =
+
+
+
+
+
+    Ok(AuthBodyResp{
+        token: "".to_string(),
+        token_type: "".to_string(),
+        exp: 0,
+        exp_in: 0
+    })
 }
 
 pub async fn set_login_info(
@@ -59,6 +84,18 @@ pub async fn set_login_info(
     let user_agent: String = req.header("user-agent").unwrap();
     let ua = get_user_agent(&user_agent);
     let ip = get_remote_ip(req);
+    let net = get_city_by_ip(&ip).await.unwrap();
+    let client = ClientResp{
+        net,
+        ua
+    };
+    // 写入登陆日志
+    if status == "1"{
+        if let(Some(token_id),Some(token)) = (token_id,token){
+
+        }
+    }
+
 
 
 
@@ -104,3 +141,26 @@ pub fn get_remote_ip(req: &mut Request) -> String {
         ip
     }
 }
+
+pub async fn get_city_by_ip(ip: &str) -> Result<ClientNetResp> {
+    let url = "http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=".to_string() + ip;
+    let resp = reqwest::get(url.as_str()).await?.text_with_charset("utf-8").await.unwrap();
+    // from_str 将 json 字符串反序列化成 结构体
+    let res = serde_json::from_str::<HashMap<String,String>>(resp.as_str())?;
+    let location = format!("{}{}",res["pro"],res["city"]);
+    let net_work = res["addr"].split(' ').collect::<Vec<&str>>()[1].to_string();
+    Ok(ClientNetResp{
+        ip: res["ip"].to_string(),
+        location,
+        net_work,
+    })
+}
+
+// 身份认证
+// pub fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBodyResp>{
+//     if payload.id.is_empty() || payload.name.is_empty() {
+//
+//     }
+//
+//     Ok()
+// }

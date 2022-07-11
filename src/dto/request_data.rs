@@ -36,3 +36,17 @@ pub struct UserLoginReq {
     pub code: String,
     pub uuid: String,
 }
+
+#[derive(Debug,Deserialize,Clone)]
+pub struct AuthPayload {
+    pub id: String,
+    pub name: String,
+}
+
+#[derive(Debug,Serialize,Deserialize,Clone)]
+pub struct Claims {
+    pub id: String,
+    pub token_id: String,
+    pub name: String,
+    pub exp: i64
+}

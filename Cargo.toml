@@ -28,4 +28,8 @@ md5 = "0.7"
 rand = "0.8"
 # 处理错误
 anyhow = "1"
+# http 请求库
+reqwest = "0.11.11"
 user-agent-parser = "0.3"
+
+scru128 = "2.1.3"

@@ -129,6 +129,17 @@ mod test{
         let user2 = UserEntity::fetch_one(&rb,"admin").await;
         println!("user2 = {:?}",user2);
     }
+
+    #[tokio::test]
+    async fn test_get_by_id(){
+        fast_log::init(fast_log::config::Config::new().console()).expect("TODO: panic message");
+        let rb =init_rbatis().await;
+        let user_dept = UserEntity::get_by_id(&rb,"00TV87DDOBJPU75J4TGUOC3NNG").await;
+        println!("user_dept = {:?}",user_dept);
+        println!("================================================================");
+        let user_dept2 = UserEntity::get_by_id(&rb,"00TV87DDOBJPU75J4TGUOC3NNG").await;
+        println!("user_dept2 = {:?}",user_dept2);
+    }
 }
 
 

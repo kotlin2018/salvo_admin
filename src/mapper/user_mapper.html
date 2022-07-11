@@ -45,8 +45,8 @@
         select u.*,d.* from sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         <where>
-            <if test="user_id !=null">and u.user_id=#{user_id}</if>
-            and deleted_at is null order by id asc limit 1
+            <if test="user_id !=null">and u.id=#{user_id}</if>
         </where>
+        ${' '}and u.deleted_at is null order by u.id asc limit 1
     </select>
 </mapper>

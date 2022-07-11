@@ -10,7 +10,7 @@ pub struct UserAndDeptResp {
     pub user_email: Option<String>,
     pub sex: Option<String>,
     pub avatar: Option<String>,
-    pub role_id: Option<u32>,
+    pub role_id: Option<String>,
     pub remark: Option<String>,
     pub is_admin: Option<bool>,
     pub phone_num: Option<String>,

@@ -1,8 +1,5 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
-use std::fmt::Error;
-use std::ptr::null;
-use std::rc::Rc;
 use anyhow::{Result, Ok, anyhow};
 use chrono::{Duration, Local};
 use fast_log::init;
@@ -10,7 +7,6 @@ use jsonwebtoken::{encode, EncodingKey, Header};
 use rbatis::crud::{CRUD, CRUDMut};
 use rbatis::DateTimeNative;
 use rbatis::executor::RBatisTxExecutor;
-use salvo::hyper::body::Buf;
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
 use crate::dto::request_data::{AuthPayload, Claims, UserLoginReq};
@@ -232,6 +228,6 @@ pub async fn login_log_add(req: ClientResp,user: String,msg: String,status: Stri
     };
     let rb = init_rbatis().await;
     let mut tx: RBatisTxExecutor = rb.acquire_begin().await.expect("初始化事务句柄失败");
-    tx.save(&login_log,&[]);
-    tx.commit();
+    tx.save(&login_log,&[]).await.expect("");
+    tx.commit().await.expect("TODO: panic message");
 }

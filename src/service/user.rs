@@ -186,8 +186,11 @@ pub async fn user_online_add(req: ClientResp,uid: String,token_id: String,token_
     let rb = init_rbatis().await;
 
     // 使用 html_sql 属性宏
-    let user = UserEntity::get_by_id(&rb,&uid).await;
-    let dept = UserEntity::get_dept(&rb,&user.dept_id.unwrap()).await;
+    let user = UserEntity::get_by_id(&rb,&uid).await.expect("获取用户信息失败");
+
+    // 使用 Wrapper 包装器
+    let w = rb.new_wrapper().eq("deleted_at","null").eq("dept_id",&user.dept_id.unwrap());
+    let dept = rb.fetch_by_wrapper::<DeptEntity>(w).await.expect("获取部门信息失败");
 
     // 使用普通事务
     let mut tx = rb.acquire_begin().await.expect("初始化事务句柄失败");

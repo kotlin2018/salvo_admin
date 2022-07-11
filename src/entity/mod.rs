@@ -24,6 +24,7 @@ use rbatis::rbatis::Rbatis;
 use yaml_rust::{Yaml, YamlLoader};
 
 // 服务启动配置
+// 这个结构体的字段类型有 move 语义的类型 (此处为: String),因此不能使用 Copy Trait，只能使用 Clone Trait
 #[derive(Debug,Clone)]
 pub struct ApplicationConfig{
     pub debug: bool,
@@ -118,7 +119,7 @@ fn to_vec_string(arg: Vec<Yaml>) -> Vec<String>{
 }
 
 // 定义全局静态变量
-pub static RB: Lazy<Rbatis> = Lazy::new(||Rbatis::new());
+// pub static RB: Lazy<Rbatis> = Lazy::new(||Rbatis::new());
 
 // 初始化 rbatis
 pub async fn init_rbatis() -> Rbatis{

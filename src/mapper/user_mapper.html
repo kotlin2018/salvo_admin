@@ -49,4 +49,12 @@
         </where>
         ${' '}and u.deleted_at is null order by u.id asc limit 1
     </select>
+
+    <select id="get_dept">
+        select * from sys_dept
+        <where>
+            <if test="dept_id !=null">dept_id =#{dept_id}</if>
+            ${' '}and deleted_at is null limit 1
+        </where>
+    </select>
 </mapper>

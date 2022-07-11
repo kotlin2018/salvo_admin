@@ -4,6 +4,7 @@ use rbatis::rbatis::Rbatis;
 use serde::{Serialize, Deserialize};
 use crate::dto::request_data::SearchReq;
 use crate::dto::response_data::UserAndDeptResp;
+use crate::entity::user_dept::UserDeptEntity;
 
 // 用户表
 #[crud_table(table_name:"sys_user" | formats_mysql:"id:{}::uuid")]
@@ -62,13 +63,16 @@ impl Default for UserEntity {
 
 impl UserEntity {
     #[html_sql("./src/mapper/user_mapper.html")]
-    pub async fn get_sort_list(rb: &mut RbatisExecutor<'_,'_>,page_req: &PageRequest,sql_arg: &SearchReq) -> Page<UserAndDeptResp>{impled!()}
+    pub async fn get_sort_list(rb: &mut RbatisExecutor<'_,'_>,page_req: &PageRequest,sql_arg: &SearchReq) ->Result<Page<UserAndDeptResp>,rbatis::Error>{impled!()}
 
     #[py_sql("select * from sys_user where user_name =#{name}")]
-    pub async fn fetch_one(rb: &Rbatis,name: &str) -> UserEntity{impled!()}
+    pub async fn fetch_one(rb: &Rbatis,name: &str) ->Result<UserEntity,rbatis::Error>{impled!()}
 
     #[html_sql("./src/mapper/user_mapper.html")]
-    pub async fn get_by_id(rb: &Rbatis,user_id: &str) -> UserAndDeptResp {impled!()}
+    pub async fn get_by_id(rb: &Rbatis,user_id: &str) ->Result<UserAndDeptResp,rbatis::Error> {impled!()}
+
+    #[html_sql("./src/mapper/user_mapper.html")]
+    pub async fn get_dept(rb: &Rbatis,dept_id: &str) ->Result<UserDeptEntity,rbatis::Error> {impled!()}
 }
 
 #[cfg(test)]
@@ -141,5 +145,4 @@ mod test{
         println!("user_dept2 = {:?}",user_dept2);
     }
 }
-
 

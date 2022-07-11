@@ -58,6 +58,7 @@ pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<Aut
         set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
         return Err(anyhow!("密码不正确"));
     }
+
     // 注册 JWT
     let claims = AuthPayload {
         id: user.id.clone().unwrap(),

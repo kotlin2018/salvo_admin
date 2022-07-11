@@ -34,19 +34,21 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 }
 
 #[fn_handler]
-pub async fn login(login_req: UserLoginReq,req: &mut Request){//Json<JsonResult<UserEntity>>
-
-
+pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult<AuthBodyResp>>{//
     let res = user_login(login_req,req).await;
-    println!("result {:?}",res);
-
-
-    // let mut res = JsonResult{
-    //     code: None,
-    //     msg: None,
-    //     data: None
-    // };
-
+    if res.is_ok(){
+        Json(JsonResult{
+            code: Some(200),
+            msg:  Some("success".to_string()),
+            data: Some(res.unwrap())
+        })
+    }else {
+        Json(JsonResult{
+            code: Some(400),
+            msg:  Some("登陆失败".to_string()),
+            data: None
+        })
+    }
 }
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: SearchReq){

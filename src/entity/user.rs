@@ -66,6 +66,9 @@ impl UserEntity {
 
     #[py_sql("select * from sys_user where user_name =#{name}")]
     pub async fn fetch_one(mut rb: Rbatis,name: &str) -> UserEntity{impled!()}
+
+    #[html_sql("./src/mapper/user_mapper.html")]
+    pub async fn get_by_id(mut rb: Rbatis,user_id: &str) -> UserAndDeptResp {impled!()}
 }
 
 #[cfg(test)]

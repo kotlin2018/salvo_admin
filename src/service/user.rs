@@ -1,16 +1,22 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::Error;
+use std::ptr::null;
 use anyhow::{Result, Ok, anyhow};
 use chrono::{Duration, Local};
+use fast_log::init;
 use jsonwebtoken::{encode, EncodingKey, Header};
-use rbatis::crud::CRUD;
+use rbatis::crud::{CRUD, CRUDMut};
+use rbatis::DateTimeNative;
+use salvo::hyper::body::Buf;
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
 use crate::dto::request_data::{AuthPayload, Claims, UserLoginReq};
 use crate::dto::response_data::{AuthBodyResp, ClientNetResp, ClientResp, UserAgentResp};
 use crate::{ApplicationConfig, init_rbatis, Request};
+use crate::entity::dept::DeptEntity;
 use crate::entity::user::UserEntity;
+use crate::entity::user_online::UserOnlineEntity;
 
 /// 秘密加密
 pub fn encrypt_password(password: &str,salt: &str) -> String{
@@ -183,8 +189,33 @@ pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBody
     })
 }
 
-// pub async fn add(req: ClientResp,uid: String,token_id: String,token_exp: i64) {
-//     let u_id = scru128::scru128().to_string();
-//     let now = Local::now().naive_local();
-//     let user =
-// }
+/// 使用 Rbatis 的普通事务
+pub async fn add(req: ClientResp,uid: String,token_id: String,token_exp: i64) {
+    let u_id = scru128::scru128().to_string();
+    let now = DateTimeNative::now();
+    let rb = init_rbatis().await;
+    // 使用 html_sql 属性宏
+    let user = UserEntity::get_by_id(rb,&uid).await;
+    // 使用 Wrapper 包装器
+    let w = rb.new_wrapper().eq("deleted_at","null").eq("dept_id",user.dept_id);
+    let dept = rb.fetch_by_wrapper::<DeptEntity>((w)).await.unwrap();
+    // 使用普通事务
+    let mut tx = rb.acquire_begin().await.unwrap();
+    let user_online = UserOnlineEntity {
+        id: Some(u_id.clone()),
+        u_id: Some(uid),
+        token_id: Some(token_id),
+        token_exp: Some(token_exp),
+        login_time: Some(now),
+        user_name: user.user_name.clone(),
+        dept_name: dept.dept_name.clone(),
+        net: Some(req.net.net_work),
+        ipaddr: Some(req.net.ip),
+        login_location: Some(req.net.location),
+        device: Some(req.ua.device),
+        browser: Some(req.ua.browser),
+        os: Some(req.ua.os)
+    };
+    tx.save(&user_online);
+    tx.commit().await.unwrap();
+}

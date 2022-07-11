@@ -4,9 +4,9 @@ use serde::{Serialize, Deserialize};
 #[crud_table(table_name:sys_user_online)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct UserOnlineEntity {
-    pub id: Option<Uuid>,
-    pub u_id: Option<Uuid>,
-    pub token_id: Option<Uuid>,
+    pub id: Option<String>,
+    pub u_id: Option<String>,
+    pub token_id: Option<String>,
     pub token_exp: Option<i64>,
     pub login_time: Option<DateTimeNative>,
     pub user_name: Option<String>,

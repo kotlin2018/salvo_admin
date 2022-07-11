@@ -41,4 +41,12 @@
                 ${' '}order by u.id asc
     </select>
 
+    <select id="get_by_id">
+        select u.*,d.* from sys_user u
+        left join sys_dept d on u.dept_id = d.dept_id
+        <where>
+            <if test="user_id !=null">and u.user_id=#{user_id}</if>
+            and deleted_at is null order by id asc limit 1
+        </where>
+    </select>
 </mapper>

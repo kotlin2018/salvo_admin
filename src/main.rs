@@ -2,9 +2,8 @@
 extern crate rbatis;
 use salvo::prelude::*;
 use crate::controller::init_router;
-use crate::dao::{ApplicationConfig, init_rbatis};
+use crate::entity::{ApplicationConfig, init_rbatis};
 
-mod dao;
 mod entity;
 mod controller;
 mod service;

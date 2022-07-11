@@ -1,7 +1,6 @@
 use captcha_rust::Captcha;
 use salvo::prelude::*;
 use crate::controller::JsonResult;
-use crate::dao::init_rbatis;
 use crate::dto::request_data::UserLoginReq;
 use crate::dto::response_data::{AuthBodyResp, CaptchaImageResp};
 use crate::dto::request_data::{PageParams, SearchReq};

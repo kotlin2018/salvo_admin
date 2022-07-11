@@ -182,3 +182,9 @@ pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBody
         exp_in: cfg.jwt_expire
     })
 }
+
+// pub async fn add(req: ClientResp,uid: String,token_id: String,token_exp: i64) {
+//     let u_id = scru128::scru128().to_string();
+//     let now = Local::now().naive_local();
+//     let user =
+// }

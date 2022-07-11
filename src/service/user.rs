@@ -34,7 +34,7 @@ pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<Aut
 
     // 根据用户名获取用户信息
     let rb = init_rbatis().await;
-    let user = rb.fetch_by_column::<UserEntity, _>("user_name", &login_req.user_name).await.unwrap();
+    let user = rb.fetch_by_column::<UserEntity, _>("user_name", &login_req.user_name).await.unwrap_or_default();
     if user.id.is_none(){
         msg = "用户不存在".to_string();
         status = "0".to_string();
@@ -57,12 +57,12 @@ pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<Aut
     }
 
     // 注册 JWT
-    // let claims = AuthPayload {
-    //     id: user.id.clone().unwrap(),
-    //     name: login_req.user_name.clone()
-    // };
-    // let token_id = scru128_string();
-    // let token =
+    let claims = AuthPayload {
+        id: user.id.clone().unwrap(),
+        name: login_req.user_name.clone()
+    };
+    let token_id = scru128_string();
+    //let token =
 
 
 
@@ -129,9 +129,9 @@ pub fn get_user_agent(user_agent: &str) -> UserAgentResp {
 
 /// 获取客户端的 IP 地址
 pub fn get_remote_ip(req: &mut Request) -> String {
-    let ip: String = req.header("X-Forwarded-For").unwrap();
+    let ip: String = req.header("X-Forwarded-For").unwrap_or_default();
     if ip.is_empty() {
-        let x_real_ip: String = req.header("X-Real-IP").unwrap();
+        let x_real_ip: String = req.header("X-Real-IP").unwrap_or_default();
         if x_real_ip.is_empty() {
             req.remote_addr().unwrap().to_string()
         }else {

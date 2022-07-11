@@ -101,12 +101,12 @@ pub async fn set_login_info(
     // 写入登陆日志
     if status == "1"{
         if let(Some(token_id),Some(token)) = (token_id,token){
-            user_online_add(client,uid,token_id,token.clone().exp).await;
+            user_online_add(client.clone(),uid,token_id,token.clone().exp).await;
         }
     };
-    // tokio::spawn(async move {
-    //     login_log_add(client.clone(),user,msg,status.clone()).await;
-    // });
+    tokio::spawn(async move {
+        login_log_add(client.clone(),user,msg,status.clone()).await;
+    });
 }
 
 /// 将从请求头中获取的 user-agent 解析成 UserAgentResp 对象
@@ -209,8 +209,8 @@ pub async fn user_online_add(req: ClientResp,uid: String,token_id: String,token_
         browser: Some(req.ua.browser),
         os: Some(req.ua.os)
     };
-    tx.save(&user_online,&[]).await.expect("");
-    tx.commit().await.expect("");
+    tx.save(&user_online,&[]).await.expect("初始化事务句柄失败");
+    tx.commit().await.expect("提交事务失败");
 }
 
 pub async fn login_log_add(req: ClientResp,user: String,msg: String,status: String){
@@ -233,5 +233,5 @@ pub async fn login_log_add(req: ClientResp,user: String,msg: String,status: Stri
     let rb = init_rbatis().await;
     let mut tx: RBatisTxExecutor = rb.acquire_begin().await.expect("初始化事务句柄失败");
     tx.save(&login_log,&[]).await.expect("");
-    tx.commit().await.expect("TODO: panic message");
+    tx.commit().await.expect("提交事务失败");
 }

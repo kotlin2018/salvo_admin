@@ -28,8 +28,8 @@ pub struct UserAndDeptResp {
 #[derive(Debug,Serialize,Deserialize)]
 pub struct CaptchaImageResp {
     pub captcha_on_off: bool,
-    pub uuid: String,
     pub img: String,
+    pub uuid: String,
 }
 
 #[derive(Debug,Serialize,Deserialize,Clone)]

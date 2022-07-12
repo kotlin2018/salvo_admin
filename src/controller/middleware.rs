@@ -15,9 +15,7 @@ pub async fn cors(req: &mut Request,res: &mut Response){
                 res.set_status_code("200".parse().unwrap());
             }
         },
-        None => {
-            res.render(Text::Plain("设置跨域失败"))
-        }
+        None => {}
     };
 }
 

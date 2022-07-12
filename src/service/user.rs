@@ -37,10 +37,10 @@ impl UserService {
     pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<AuthBodyResp>{
         let mut msg = "登陆成功".to_string();
         let mut status = "1".to_string();
-        if encrypt_password(&login_req.code,"") != login_req.uuid {
+        if UserService::encrypt_password(&login_req.code,"") != login_req.uuid {
             msg = "验证码错误".to_string();
             status = "0".to_string();
-            set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(),None,None).await;
+            UserService::set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(),None,None).await;
             return Err(anyhow!(msg))
         }
 
@@ -50,21 +50,21 @@ impl UserService {
         if user.id.is_none(){
             msg = "用户不存在".to_string();
             status = "0".to_string();
-            set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
+            UserService::set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
             return Err(anyhow!(msg))
         }else if &user.user_status.unwrap() == "0"{
             msg = "用户已被禁用".to_string();
             status = "0".to_string();
             // set_login_info 传 &login_req.user_name 会报错，只能传 login_req.user_name 对象
-            set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(), None, None).await;
+            UserService::set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(), None, None).await;
             return Err(anyhow!(msg))
         }
 
         // 验证密码是否正确
-        if encrypt_password(&login_req.user_password,&user.user_salt.unwrap()) != user.user_password.unwrap() {
+        if UserService::encrypt_password(&login_req.user_password,&user.user_salt.unwrap()) != user.user_password.unwrap() {
             msg = "密码错误".to_string();
             status = "0".to_string();
-            set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
+            UserService::set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
             return Err(anyhow!("密码不正确"));
         }
 
@@ -74,9 +74,9 @@ impl UserService {
             name: login_req.user_name.clone()
         };
         let token_id = scru128_string();
-        let token = authorize(claims.clone(),token_id.clone()).await.unwrap_or_default();
+        let token = UserService::authorize(claims.clone(),token_id.clone()).await.unwrap_or_default();
         // 成功登陆后写入登陆日志
-        set_login_info(
+        UserService::set_login_info(
             req,
             user.id.unwrap().to_string(),
             login_req.user_name.clone(),
@@ -94,9 +94,9 @@ impl UserService {
         token_id: Option<String>,token: Option<AuthBodyResp>)
     {
         let user_agent: String = req.header("user-agent").unwrap();
-        let ua = get_user_agent(&user_agent);
-        let ip = get_remote_ip(req);
-        let net = get_city_by_ip(&ip).await.unwrap();
+        let ua = UserService::get_user_agent(&user_agent);
+        let ip = UserService::get_remote_ip(req);
+        let net = UserService::get_city_by_ip(&ip).await.unwrap();
         let client = ClientResp{
             net,
             ua
@@ -104,11 +104,11 @@ impl UserService {
         // 写入登陆日志
         if status == "1"{
             if let(Some(token_id),Some(token)) = (token_id,token){
-                user_online_add(client.clone(),uid,token_id,token.clone().exp).await;
+                UserService::user_online_add(client.clone(),uid,token_id,token.clone().exp).await;
             }
         };
         tokio::spawn(async move {
-            login_log_add(client.clone(),user,msg,status.clone()).await;
+            UserService::login_log_add(client.clone(),user,msg,status.clone()).await;
         });
     }
 

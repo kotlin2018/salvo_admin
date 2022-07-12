@@ -6,23 +6,15 @@ mod oper;
 mod menu;
 mod login_log;
 mod user;
+mod middleware;
+
 use salvo::prelude::*;
 use tracing::subscriber::with_default;
+use crate::controller::middleware::cors;
 use crate::controller::user::{add_user, change_dept, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, update_avatar, update_passwd, update_profile};
-
-#[fn_handler]
-pub async fn cors(req: &mut Request,res: &mut Response){
-    let origin = req.header::<String>("Origin").unwrap();
-    println!("origin = {:?}",origin);
-}
-
 
 // 初始化路由
 pub fn init_router() ->Router{
-    // let cors_handler = CorsHandler::builder()
-    //     .with_allow_origin("http://127.0.0.1:3000")
-    //     .with_allow_methods(vec!["GET", "POST", "DELETE"])
-    //     .build();
    let  router = Router::new().hoop(cors)
         .push(Router::with_path("api/system/user")
             .push(Router::with_path("get_sort_list").get(get_sort_list))

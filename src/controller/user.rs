@@ -1,7 +1,7 @@
 use captcha_rust::Captcha;
 use salvo::prelude::*;
 use crate::controller::JsonResult;
-use crate::dto::request_data::UserLoginReq;
+use crate::dto::request_data::{Claims, UserLoginReq};
 use crate::dto::response_data::{AuthBodyResp, CaptchaImageResp};
 use crate::dto::request_data::{PageParams, SearchReq};
 use crate::entity::user::UserEntity;
@@ -34,7 +34,7 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 
 /// 用户登陆
 #[fn_handler]
-pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult<AuthBodyResp>>{//
+pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult<AuthBodyResp>>{
     let res = UserService::user_login(login_req,req).await;
     if res.is_ok(){
         Json(JsonResult{
@@ -50,10 +50,33 @@ pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult
         })
     }
 }
+
+/// 刷新token
+#[fn_handler]
+// pub async fn fresh_token(token: Claims) -> Json<JsonResult<AuthBodyResp>>{
+//     let res = UserService::fresh_token(token).await;
+//     if res.is_ok() {
+//         return Json(JsonResult{
+//             code: Some(200),
+//             msg:  Some("success".to_string()),
+//             data: Some(res.unwrap())
+//         })
+//     }else {
+//         return Json(JsonResult{
+//             code: Some(400),
+//             msg:  Some("刷新token失败".to_string()),
+//             data: None
+//         });
+//     }
+// }
+
+pub async fn fresh_token(token: Claims){
+}
+
+/// 获取用户列表
 #[fn_handler]
 pub async fn get_sort_list(page_params: PageParams,search: SearchReq){
-    // let rb = init_rbatis().await;
-    //   rb.
+
 
 }
 
@@ -106,11 +129,6 @@ pub async fn update_passwd(req: &mut Request) -> &'static str{
 #[fn_handler]
 pub async fn change_status(req: &mut Request) -> &'static str{
     "change_status"
-}
-
-#[fn_handler]
-pub async fn fresh_token(req: &mut Request) -> &'static str{
-    "fresh_token"
 }
 
 #[fn_handler]

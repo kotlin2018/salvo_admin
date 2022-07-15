@@ -1,4 +1,6 @@
 use rbatis::{DateTimeNative, Uuid};
+use rbatis::db::DBExecResult;
+use rbatis::rbatis::Rbatis;
 use serde::{Serialize, Deserialize};
 
 #[crud_table(table_name:sys_user_online)]
@@ -38,3 +40,11 @@ impl Default for UserOnlineEntity {
         }
     }
 }
+
+impl UserOnlineEntity {
+    #[py_sql("
+          update sys_user_online set token_exp=#{token_exp} where token_id =#{token_id}
+    ")]
+    pub async fn update_online(rb: &Rbatis,token_id: &str,token_exp: &u64) -> Result<DBExecResult,rbatis::Error>{impled!()}
+}
+

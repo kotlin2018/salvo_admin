@@ -43,7 +43,9 @@ pub struct AuthPayload {
     pub name: String,
 }
 
-#[derive(Debug,Serialize,Deserialize,Clone)]
+/// 包装了 token 信息的结构体
+#[derive(Debug,Serialize,Deserialize,Extractible,Clone)]
+#[extract(default_source(from = "body", format = "json"))]
 pub struct Claims {
     pub id: String,
     pub token_id: String,

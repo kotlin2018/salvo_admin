@@ -21,6 +21,7 @@ use crate::entity::user_online::UserOnlineEntity;
 pub struct UserService{}
 
 impl UserService {
+
     /// 秘密加密
     pub fn encrypt_password(password: &str,salt: &str) -> String{
         use std::fmt::Write;
@@ -238,6 +239,29 @@ impl UserService {
         tx.save(&login_log,&[]).await.expect("");
         tx.commit().await.expect("提交事务失败");
     }
+    
+    // 刷新 token
+    // pub async fn fresh_token(user: Claims) -> Result<AuthBodyResp>{
+    //     let claims = AuthPayload {
+    //         id: user.clone().id,
+    //         name: user.clone().name,
+    //     };
+    //     /// 重新生成一个 token
+    //     let token = UserService::authorize(claims.clone(),user.clone().token_id).await.expect("刷新token失败");
+    //
+    //     Ok(AuthBodyResp)
+    //
+    //
+    // }
+
+    // pub async fn update_online(token: String,token_exp: i64) -> Result<String> {
+    //     let rb = init_rbatis().await;
+    //     let tx = rb.acquire_begin().await.unwrap();
+    //     let w = rb.new_wrapper().eq("token_exp",token_exp);
+    //     let obj =
+    //     tx.update_by_wrapper()
+    //
+    // }
 }
 
 

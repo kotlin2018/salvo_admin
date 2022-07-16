@@ -7,8 +7,8 @@ use crate::dto::response_data::UserAndDeptResp;
 use crate::entity::user_dept::UserDeptEntity;
 
 // 用户表
-#[crud_table(table_name:"sys_user" | formats_mysql:"id:{}::uuid")]
-// #[crud_table(table_name:"sys_user")]
+// #[crud_table(table_name:"sys_user" | formats_mysql:"id:{}::uuid")] //此处要注释掉这行
+#[crud_table(table_name:"sys_user")]
 #[derive(Debug,Serialize,Deserialize,PartialEq,Clone)]
 pub struct UserEntity {
     // pub id: Option<Uuid>, // 使用Uuid会报错，推荐使用 String

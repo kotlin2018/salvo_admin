@@ -250,9 +250,12 @@ impl UserService {
             name: user.clone().name,
         };
         /// 重新生成一个 token
-        let token = UserService::authorize(claims.clone(),user.clone().token_id).await.expect("刷新token失败");
-        UserService::update_online(user.clone().token_id,token.clone().exp);
-        Ok(token)
+        match UserService::authorize(claims.clone(),user.clone().token_id).await{
+            Ok(token) => {
+                UserService::update_online(user.clone().token_id,token.clone().exp);
+                return token
+            }
+        }
     }
 
     // 使用原生事务

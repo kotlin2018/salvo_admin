@@ -56,19 +56,21 @@ pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult
 /// 刷新token
 #[fn_handler]
 pub async fn fresh_token(token: Claims) -> Json<JsonResult<AuthBodyResp>>{
-    let res = UserService::fresh_token(token).await;
-    return if res.is_ok() {
-        Json(JsonResult {
-            code: Some(200),
-            msg: Some("success".to_string()),
-            data: Some(res.unwrap())
-        })
-    } else {
-        Json(JsonResult {
-            code: Some(400),
-            msg: Some("刷新token失败".to_string()),
-            data: None
-        })
+    match UserService::fresh_token(token).await{
+        Ok(res) => {
+            Json(JsonResult {
+                code: Some(200),
+                msg: Some("success".to_string()),
+                data: Some(res)
+            })
+        },
+        Err(e) =>{
+            Json(JsonResult {
+                code: Some(400),
+                msg: Some(e.to_string()),
+                data: None
+            })
+        }
     }
 }
 

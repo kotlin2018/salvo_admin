@@ -52,3 +52,16 @@ pub struct Claims {
     pub name: String,
     pub exp: i64
 }
+
+/// 用户注册信息
+#[derive(Debug,Serialize,Deserialize,Extractible,Clone)]
+#[extract(default_source(from = "body", format = "json"))]
+pub struct SignUpReq {
+    pub phone: String,
+    pub password: String,
+    pub user_name: String,
+    pub nickname: String,
+    pub email: String,
+    pub sex: String,
+    pub avatar: String,
+}

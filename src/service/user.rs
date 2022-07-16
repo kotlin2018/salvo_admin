@@ -1,15 +1,18 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::fmt::format;
 use anyhow::{Result, Ok, anyhow};
+use std::result::Result::{Ok as stdOK,Err as stdErr};
 use chrono::{Duration, Local};
 use fast_log::init;
 use jsonwebtoken::{encode, EncodingKey, Header};
 use rbatis::crud::{CRUD, CRUDMut};
-use rbatis::DateTimeNative;
-use rbatis::executor::RBatisTxExecutor;
+use rbatis::{DateTimeNative,Uuid};
+use rbson::Bson;
+use rbatis::executor::{ExecutorMut, RBatisTxExecutor};
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
-use crate::dto::request_data::{AuthPayload, Claims, UserLoginReq};
+use crate::dto::request_data::{AuthPayload, Claims, SignUpReq, UserLoginReq};
 use crate::dto::response_data::{AuthBodyResp, ClientNetResp, ClientResp, UserAgentResp, UserAndDeptResp};
 use crate::{ApplicationConfig, init_rbatis, Request};
 use crate::entity::dept::DeptEntity;
@@ -23,7 +26,7 @@ pub struct UserService{}
 impl UserService {
 
     /// 秘密加密
-    pub fn encrypt_password(password: &str,salt: &str) -> String{
+    pub fn encrypt_password(password: &str,salt: &str) ->String{
         use std::fmt::Write;
         let s = password.to_owned() + salt;
         let digest = md5::compute(s).to_vec();
@@ -241,27 +244,65 @@ impl UserService {
     }
     
     // 刷新 token
-    // pub async fn fresh_token(user: Claims) -> Result<AuthBodyResp>{
-    //     let claims = AuthPayload {
-    //         id: user.clone().id,
-    //         name: user.clone().name,
-    //     };
-    //     /// 重新生成一个 token
-    //     let token = UserService::authorize(claims.clone(),user.clone().token_id).await.expect("刷新token失败");
-    //
-    //     Ok(AuthBodyResp)
-    //
-    //
-    // }
+    pub async fn fresh_token(user: Claims) -> Result<AuthBodyResp>{
+        let claims = AuthPayload {
+            id: user.clone().id,
+            name: user.clone().name,
+        };
+        /// 重新生成一个 token
+        let token = UserService::authorize(claims.clone(),user.clone().token_id).await.expect("刷新token失败");
+        UserService::update_online(user.clone().token_id,token.clone().exp);
+        Ok(token)
+    }
 
-    // pub async fn update_online(token: String,token_exp: i64) -> Result<String> {
-    //     let rb = init_rbatis().await;
-    //     let tx = rb.acquire_begin().await.unwrap();
-    //     let w = rb.new_wrapper().eq("token_exp",token_exp);
-    //     let obj =
-    //     tx.update_by_wrapper()
-    //
-    // }
+    // 使用原生事务
+    pub async fn update_online(token: String,token_exp: i64) -> Result<String> {
+        let rb = init_rbatis().await;
+        let mut tx = rb.acquire_begin().await.unwrap();
+        tx.exec("update sys_user_online set token_exp=? where token_id =?",vec![Bson::Int64(token_exp),Bson::String(token)]).await.expect("");
+        tx.commit().await.expect("更新失败");
+        Ok("token更新成功".to_string())
+    }
+
+    /// 注册用户
+    pub async fn sign_up(arg: SignUpReq) -> String{
+        let rb = init_rbatis().await;
+        let mut tx = rb.acquire_begin().await.expect("事务初始化失败");
+        let w = rb.new_wrapper();
+        w.clone().eq("phone_num",&arg.phone);
+        let obj = tx.fetch_by_wrapper::<UserEntity>(w).await.unwrap();
+        let mut result = String::from("");
+        if !obj.id.is_none(){
+            result = String::from(format!("{}该手机号已经注册，请直接登陆您的账号",&arg.phone))
+        }else {
+            let user = UserEntity{
+                id: Some(Uuid::new().to_string()),
+                user_name: Some(arg.clone().user_name),
+                user_nickname: Some(arg.clone().nickname),
+                user_password: Some(arg.clone().password),
+                user_salt: Some("0000".to_string()),// 这里应该使用随机数
+                user_status: Some("已注册".to_string()),
+                user_email: Some(arg.clone().email),
+                sex: Some(arg.clone().sex),
+                avatar: Some(arg.clone().avatar),
+                role_id: None,
+                dept_id: None,
+                remark: None,
+                is_admin: None,
+                phone_num: Some(arg.clone().phone),
+                last_login_ip: None,
+                last_login_time: None,
+                created_at: None,
+                updated_at: Some(DateTimeNative::now()),
+                deleted_at: None
+            };
+            let res = tx.save(&user,&[]).await.expect("注册失败");
+            if res.rows_affected != 0 {
+                result = String::from("注册成功");
+            }
+        };
+        return result;
+    }
 }
 
 

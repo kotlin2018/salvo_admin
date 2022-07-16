@@ -11,7 +11,7 @@ mod middleware;
 use salvo::prelude::*;
 use tracing::subscriber::with_default;
 use crate::controller::middleware::cors;
-use crate::controller::user::{add_user, change_dept, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, update_avatar, update_passwd, update_profile};
+use crate::controller::user::{add_user, change_dept, change_status, delete_user, edit_user, fresh_token, get_by_id, get_captcha, get_info, get_profile, get_sort_list, login, reset_passwd, sign_up, update_avatar, update_passwd, update_profile};
 
 // 初始化路由
 pub fn init_router() ->Router{
@@ -50,7 +50,9 @@ pub fn init_router() ->Router{
        .path("")
        .push(Router::with_path("api/comm")
            .push(Router::with_path("get_captcha").get(get_captcha))
-           .push(Router::with_path("login").post(login)));
+           .push(Router::with_path("login").post(login))
+           .push(Router::with_path("sign_up").post(sign_up)));
+
    router
 }
 

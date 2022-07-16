@@ -73,6 +73,7 @@ impl UserEntity {
 
     #[html_sql("./src/mapper/user_mapper.html")]
     pub async fn get_dept(rb: &Rbatis,dept_id: &str) ->Result<UserDeptEntity,rbatis::Error> {impled!()}
+
 }
 
 #[cfg(test)]

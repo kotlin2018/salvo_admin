@@ -72,9 +72,9 @@ pub async fn fresh_token(token: Claims) -> Json<JsonResult<AuthBodyResp>>{
 
 /// 注册用户
 #[fn_handler]
-pub async fn sign_up(obj: SignUpReq){
-    let res = UserService::sign_up(obj).await;
-    println!("{:?}",res);
+pub async fn sign_up(obj: SignUpReq,res: &mut Response){
+    let result = UserService::sign_up(obj).await;
+    res.render(Text::Plain(result));
 }
 
 /// 获取用户列表

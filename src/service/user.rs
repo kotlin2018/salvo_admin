@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::format;
-use anyhow::{Result, Ok, anyhow};
+// use anyhow::{Result, Ok, anyhow};
 use std::result::Result::{Ok as stdOK,Err as stdErr};
 use chrono::{Duration, Local};
 use fast_log::init;
@@ -38,14 +38,14 @@ impl UserService {
     }
 
     /// 用户登陆
-    pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<AuthBodyResp>{
+    pub async fn user_login(login_req: UserLoginReq,req: &mut Request) -> Result<AuthBodyResp,String>{
         let mut msg = "登陆成功".to_string();
         let mut status = "1".to_string();
         if UserService::encrypt_password(&login_req.code,"") != login_req.uuid {
             msg = "验证码错误".to_string();
             status = "0".to_string();
             UserService::set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(),None,None).await;
-            return Err(anyhow!(msg))
+            return Err(msg)
         }
 
         // 根据用户名获取用户信息
@@ -55,13 +55,13 @@ impl UserService {
             msg = "用户不存在".to_string();
             status = "0".to_string();
             UserService::set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
-            return Err(anyhow!(msg))
+            return Err(msg)
         }else if &user.user_status.unwrap() == "0"{
             msg = "用户已被禁用".to_string();
             status = "0".to_string();
             // set_login_info 传 &login_req.user_name 会报错，只能传 login_req.user_name 对象
             UserService::set_login_info(req,"".to_string(),login_req.user_name.clone(),msg.clone(),status.clone(), None, None).await;
-            return Err(anyhow!(msg))
+            return Err(msg)
         }
 
         // 验证密码是否正确
@@ -69,7 +69,7 @@ impl UserService {
             msg = "密码错误".to_string();
             status = "0".to_string();
             UserService::set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;
-            return Err(anyhow!("密码不正确"));
+            return Err(msg);
         }
 
         // 注册 JWT
@@ -148,11 +148,11 @@ impl UserService {
         }
     }
 
-    pub async fn get_city_by_ip(ip: &str) -> Result<ClientNetResp> {
+    pub async fn get_city_by_ip(ip: &str) -> Result<ClientNetResp,String> {
         let url = "http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=".to_string() + ip;
-        let resp = reqwest::get(url.as_str()).await?.text_with_charset("utf-8").await.unwrap();
+        let resp = reqwest::get(url.as_str()).await.expect("请求失败").text_with_charset("utf-8").await.expect("设置utf-8失败");
         // from_str 将 json 字符串反序列化成 结构体
-        let res = serde_json::from_str::<HashMap<String,String>>(resp.as_str())?;
+        let res = serde_json::from_str::<HashMap<String,String>>(resp.as_str()).expect("解析json失败");
         let location = format!("{}{}",res["pro"],res["city"]);
         let net_work = res["addr"].split(' ').collect::<Vec<&str>>()[1].to_string();
         Ok(ClientNetResp{
@@ -163,9 +163,9 @@ impl UserService {
     }
 
     /// 身份认证
-    pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBodyResp>{
+    pub async fn authorize(payload: AuthPayload,token_id: String) -> Result<AuthBodyResp,String>{
         if payload.id.is_empty() || payload.name.is_empty() {
-            return Err(anyhow!("Missing credentials"))
+            return Err("Missing credentials".to_string())
         }
         let cfg = ApplicationConfig::default();
         let iat = Local::now(); // chrono 时间库中的函数
@@ -177,13 +177,15 @@ impl UserService {
             exp: exp.timestamp()
         };
         // 这是 jsonwebtoken 中的函数
-        let token = encode(&Header::default(),&claims, &EncodingKey::from_secret(cfg.jwt_secret.as_ref())).unwrap_or_default();
-        Ok(AuthBodyResp{
-            token: token + &token_id,
-            token_type: "Bearer".to_string(),
-            exp: cfg.clone().jwt_expire,
-            exp_in: cfg.clone().jwt_expire
-        })
+        match encode(&Header::default(),&claims, &EncodingKey::from_secret(cfg.jwt_secret.as_ref())){
+            Ok(token) => Ok(AuthBodyResp{
+                token: token + &token_id,
+                token_type: "Bearer".to_string(),
+                exp: cfg.clone().jwt_expire,
+                exp_in: cfg.clone().jwt_expire
+            }),
+            Err(e) => Err("生成token错误".to_string())
+        }
     }
 
     // 使用 Rbatis 的普通事务
@@ -244,7 +246,7 @@ impl UserService {
     }
     
     // 刷新 token
-    pub async fn fresh_token(user: Claims) -> Result<AuthBodyResp>{
+    pub async fn fresh_token(user: Claims) -> Result<AuthBodyResp,String>{
         let claims = AuthPayload {
             id: user.clone().id,
             name: user.clone().name,
@@ -253,13 +255,14 @@ impl UserService {
         match UserService::authorize(claims.clone(),user.clone().token_id).await{
             Ok(token) => {
                 UserService::update_online(user.clone().token_id,token.clone().exp);
-                return token
-            }
+                Ok(token)
+            },
+            Err(e)=>Err("刷新token失败".to_string())
         }
     }
 
     // 使用原生事务
-    pub async fn update_online(token: String,token_exp: i64) -> Result<String> {
+    pub async fn update_online(token: String,token_exp: i64) -> Result<String,()> {
         let rb = init_rbatis().await;
         let mut tx = rb.acquire_begin().await.unwrap();
         tx.exec("update sys_user_online set token_exp=? where token_id =?",vec![Bson::Int64(token_exp),Bson::String(token)]).await.expect("");

@@ -35,19 +35,21 @@ pub async fn get_captcha() -> Json<JsonResult<CaptchaImageResp>>{
 /// 用户登陆
 #[fn_handler]
 pub async fn login(login_req: UserLoginReq,req: &mut Request) -> Json<JsonResult<AuthBodyResp>>{
-    let res = UserService::user_login(login_req,req).await;
-    if res.is_ok(){
-        Json(JsonResult{
-            code: Some(200),
-            msg:  Some("success".to_string()),
-            data: Some(res.unwrap())
-        })
-    }else {
-        Json(JsonResult{
-            code: Some(400),
-            msg:  Some("登陆失败".to_string()),
-            data: None
-        })
+    match UserService::user_login(login_req,req).await {
+        Ok(res) => {
+            Json(JsonResult{
+                code: Some(200),
+                msg:  Some("success".to_string()),
+                data: Some(res)
+            })
+        },
+        Err(e) => {
+            Json(JsonResult{
+                code: Some(400),
+                msg:  Some(e.to_string()),
+                data: None
+            })
+        }
     }
 }
 

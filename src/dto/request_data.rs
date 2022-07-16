@@ -32,7 +32,7 @@ pub struct SearchReq {
 #[extract(default_source(from = "body",format = "json"))]
 pub struct UserLoginReq {
     pub user_name: String,
-    pub user_password: String,
+    pub password: String,
     pub code: String,
     pub uuid: String,
 }

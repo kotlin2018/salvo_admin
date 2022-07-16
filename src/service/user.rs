@@ -65,7 +65,7 @@ impl UserService {
         }
 
         // 验证密码是否正确
-        if UserService::encrypt_password(&login_req.user_password,&user.user_salt.unwrap()) != user.user_password.unwrap() {
+        if UserService::encrypt_password(&login_req.password,&user.user_salt.unwrap()) != user.user_password.unwrap() {
             msg = "密码错误".to_string();
             status = "0".to_string();
             UserService::set_login_info(req, "".to_string(), login_req.user_name.clone(), msg.clone(), status.clone(), None, None).await;

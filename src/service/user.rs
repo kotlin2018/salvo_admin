@@ -268,9 +268,9 @@ impl UserService {
     pub async fn sign_up(arg: SignUpReq) -> String{
         let rb = init_rbatis().await;
         let mut tx = rb.acquire_begin().await.expect("事务初始化失败");
-        let user = tx.fetch::<UserEntity>("select id from sys_user where phone_num = ?",vec![Bson::String(arg.clone().phone)]).await.unwrap();
+        let id = tx.fetch::<u32>("select id from sys_user where phone_num = ?",vec![Bson::String(arg.clone().phone)]).await;
         let mut result = "".to_string();
-        if !user.id.is_none(){
+        if id.is_ok(){
             result = String::from(format!("{} 该手机号已经注册，请直接登陆您的账号",&arg.phone))
         }else {
             let user = UserEntity{
@@ -294,7 +294,7 @@ impl UserService {
                 updated_at: Some(DateTimeNative::now()),
                 deleted_at: None
             };
-            let res = tx.save(&user,&[]).await.expect("注册失败");
+            let res = tx.save::<UserEntity>(&user,&[]).await.expect("注册失败");
             if res.rows_affected != 0 {
                 result = String::from("注册成功");
             }

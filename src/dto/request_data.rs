@@ -47,9 +47,9 @@ pub struct AuthPayload {
 #[derive(Debug,Serialize,Deserialize,Extractible,Clone)]
 #[extract(default_source(from = "body", format = "json"))]
 pub struct Claims {
-    pub id: String,
+    pub id: String, //用户id
     pub token_id: String,
-    pub name: String,
+    pub name: String, //用户名
     pub exp: i64
 }
 

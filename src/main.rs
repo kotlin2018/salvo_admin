@@ -13,10 +13,11 @@ mod service;
 mod dto;
 
 #[tokio::main]
-async fn main() {
+async fn main() ->Result<(),Box<dyn std::error::Error>>{
     let server_url = ApplicationConfig::default().server_url;
     tracing_subscriber::fmt::init();
     tracing::info!("Listening on {:?}",&server_url);//这里传 server_url 的引用
     Server::new(TcpListener::
     bind(&server_url)).serve(init_router()).await;
+    Ok(())
 }

@@ -8,10 +8,12 @@ publish = false
 # 生产环境的 发行构建配置 https://magiclen.org/rust-compile-optimize/  https://zhuanlan.zhihu.com/p/476524365?utm_medium=social&utm_oi=1089297405844787200
 [profile.release]
 opt-level = 3 # 编译优化等级 0: 不优化，1: 允许基本优化，2: 允许常用优化，3: 允许所有优化，"s": 允许常用优化，外加一些能缩小体积的优化(优化输出的二进制文件的大小)，"z": 类似"s"，但更偏重于体积的优化(可能会降低性能)(优化二进制文件大小，但也会关闭循环向量化
-debug = false
-rpath = false
+debug = false # 编译后的二进制文件不输出任何debug信息 (0 或 false: 不输出任何debug信息，1: 输出debug行信息，2: 输出完整的debug信息)
+rpath = false # 硬编码到二进制可执行文件或库文件中的运行时代码搜索(runtime search path)，动态链接库的加载器就通过它来搜索所需的库。
 lto = false # 程序编译后的链接阶段时所采取的优化行为,默认为false(不激活)
-
+debug-assertions = false # debug 断言，运行时的检查，该检查只能用于 debug 模式，原因是对于 release 来说，这种检查的成本较为高昂。
+codegen-units = 16 # 指定一个包会被分隔为多少个代码生成单元。更多的代码生成单元会提升代码的并行编译速度，但是可能会降低运行速度，对于增量编译，默认值是 256，非增量编译是 16 。
+panic = 'unwind' # 遇到 panic 后对栈进行展开(unwind)
 
 
 

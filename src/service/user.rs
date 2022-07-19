@@ -12,7 +12,7 @@ use rbson::Bson;
 use rbatis::executor::{ExecutorMut, RBatisTxExecutor};
 use scru128::scru128_string;
 use user_agent_parser::UserAgentParser;
-use crate::dto::request_data::{AuthPayload, Claims, SignUpReq, UserLoginReq};
+use crate::dto::request_data::{AddUserReq, AuthPayload, Claims, SignUpReq, UserLoginReq};
 use crate::dto::response_data::{AuthBodyResp, ClientNetResp, ClientResp, UserAgentResp, UserAndDeptResp};
 use crate::{ApplicationConfig, init_rbatis, Request};
 use crate::entity::dept::DeptEntity;
@@ -20,6 +20,7 @@ use crate::entity::login_log::LoginLogEntity;
 use crate::entity::user::UserEntity;
 use crate::entity::user_dept::UserDeptEntity;
 use crate::entity::user_online::UserOnlineEntity;
+use crate::helper::rand_util::rand_string;
 
 pub struct UserService{}
 
@@ -307,6 +308,34 @@ impl UserService {
         };
         tx.commit().await.expect("事务提交失败");
         return result;
+    }
+
+    /// 新增用户
+    pub async fn add_user(req: AddUserReq){
+        let uid = scru128::scru128().to_string();
+        let salt = rand_string(10);
+        let password = UserService::encrypt_password(&req.password,&salt);
+        let user_entity = UserEntity{
+            id: Some(uid),
+            user_name: Some(req.user_name),
+            user_nickname: Some(req.nickname),
+            user_password: Some(password),
+            user_salt: Some(salt),
+            user_status: Some(req.status),
+            user_email: req.email,
+            sex: Some(req.gender),
+            avatar: req.avatar,
+            role_id: Some(req.role_id),
+            dept_id: Some(req.dept_id),
+            remark: req.remark,
+            is_admin: Some(req.is_admin),
+            phone_num: Some(req.phone),
+            created_at: Some(DateTimeNative::now()),
+            ..UserEntity::default() //后续的字段取默认值
+        };
+        let rb = init_rbatis().await;
+
+
     }
 }
 

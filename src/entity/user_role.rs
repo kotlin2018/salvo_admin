@@ -1,12 +1,12 @@
-use rbatis::{DateTimeNative, Uuid};
+use rbatis::DateTimeNative;
 use serde::{Serialize, Deserialize};
 
 #[crud_table(table_name:sys_user_role)]
 #[derive(Debug,Serialize,Deserialize)]
 pub struct UserRoleEntity {
-    pub id: Option<Uuid>,
-    pub user_id: Option<Uuid>,
-    pub role_id: Option<Uuid>,
+    pub id: Option<String>,
+    pub user_id: Option<String>,
+    pub role_id: Option<String>,
     pub created_by: Option<String>,
     pub created_at: Option<DateTimeNative>,
 }

@@ -5,6 +5,15 @@ edition = "2021"
 publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# 生产环境的 发行构建配置 https://magiclen.org/rust-compile-optimize/  https://zhuanlan.zhihu.com/p/476524365?utm_medium=social&utm_oi=1089297405844787200
+[profile.release]
+opt-level = 3 # 编译优化等级 0: 不优化，1: 允许基本优化，2: 允许常用优化，3: 允许所有优化，"s": 允许常用优化，外加一些能缩小体积的优化(优化输出的二进制文件的大小)，"z": 类似"s"，但更偏重于体积的优化(可能会降低性能)(优化二进制文件大小，但也会关闭循环向量化
+debug = false
+rpath = false
+lto = false # 程序编译后的链接阶段时所采取的优化行为,默认为false(不激活)
+
+
+
 
 [dependencies]
 tokio = { version = "1", features = ["macros"]}

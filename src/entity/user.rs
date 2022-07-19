@@ -1,5 +1,6 @@
 use rbatis::{DateTimeNative, Page, PageRequest, Uuid};
-use rbatis::executor::RbatisExecutor;
+use rbatis::db::DBExecResult;
+use rbatis::executor::{RbatisExecutor, RBatisTxExecutor};
 use rbatis::rbatis::Rbatis;
 use serde::{Serialize, Deserialize};
 use crate::dto::request_data::SearchReq;
@@ -73,6 +74,14 @@ impl UserEntity {
 
     #[html_sql("./src/mapper/user_mapper.html")]
     pub async fn get_dept(rb: &Rbatis,dept_id: &str) ->Result<UserDeptEntity,rbatis::Error> {impled!()}
+
+    #[py_sql("
+        update sys_user set role_id=#{role_id}
+        where
+
+
+    ")]
+    pub async fn update_role(tx: &mut RBatisTxExecutor,role_id: &str,role_ids: &Vec<String>) -> Result<DBExecResult,rbatis::Error>{impled!()}
 
 }
 

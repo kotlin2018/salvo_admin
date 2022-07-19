@@ -98,10 +98,10 @@ pub async fn get_profile(req: &mut Request) -> &'static str{
     "get_profile"
 }
 
-
+/// 新增用户
 #[fn_handler]
 pub async fn add_user(req: &mut Request) -> &'static str{
-    "add_user"
+
 }
 
 #[fn_handler]

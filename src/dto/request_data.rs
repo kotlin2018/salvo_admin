@@ -65,3 +65,24 @@ pub struct SignUpReq {
     pub sex: String,
     pub avatar: String,
 }
+
+/// 新增用户
+#[derive(Debug,Serialize,Deserialize,Extractible)]
+#[extract(default_source(from = "body", format = "json"))]
+pub struct AddUserReq{
+    pub user_name: String,
+    pub nickname: String,
+    pub password: String,
+    pub status: String,
+    pub email: Option<String>,
+    pub gender: String,
+    pub avatar: Option<String>,
+    pub remark: Option<String>,
+    pub is_admin: bool,
+    pub phone: String,
+    pub post_ids: Vec<String>,
+    pub dept_ids: Vec<String>,
+    pub dept_id: String,
+    pub role_ids: Vec<String>,
+    pub role_id: String,
+}

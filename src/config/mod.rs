@@ -62,26 +62,21 @@ impl Default for Context {
         let yaml_data = std::fs::read_to_string("src/config/salvo-admin.yaml").unwrap();
         //let yaml_data = include_str!("salvo-admin.yaml");
         let settings = serde_yaml::from_str::<Settings>(&yaml_data).unwrap();
-        println!("{:?}",settings);
         let db = Rbatis::new();
         let database_link = settings.database.source.unwrap();
-        println!("{}",database_link);
         db.init(MysqlDriver{},&database_link)
             .expect("rbatis link database fail!");
         let mut context = Context{
             db,
-            redis: None,
-        };
-
-        if settings.redis.addr.is_some() {
-            let redis_url = settings.redis.addr.clone().unwrap().as_str();//"redis://127.0.0.1:6379"
-            context.redis = Some(redis::Client::open(redis_url).unwrap());
+            redis: Some(redis::Client::open(settings.redis.addr.unwrap().as_str()).unwrap()),
         };
         context
     }
 }
 
-#[test]
-fn test_(){
-    let a = Context::default();
+#[tokio::test]
+async fn test_settings(){
+    let rb = &CONTEXT.db;
+    let value = rb.fetch("select * from sys_user",vec![]).await;
+    println!("value = {:?}",value);
 }

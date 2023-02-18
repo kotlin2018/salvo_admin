@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysPost {
     // 岗位编号
     pub post_id: Option<i32>,

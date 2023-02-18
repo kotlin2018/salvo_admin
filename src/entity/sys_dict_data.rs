@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysDictData {
     // 主键编码
     pub dict_code: Option<i32>,

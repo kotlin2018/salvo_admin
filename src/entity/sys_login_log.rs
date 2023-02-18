@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysLoginLog {
     pub id: Option<i32>,
     // 用户名

@@ -1,7 +1,8 @@
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::crud;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysOperaLog {
     pub id: Option<i32>,
     // 操作模块

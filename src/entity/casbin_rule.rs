@@ -1,5 +1,7 @@
 use rbatis::crud;
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct CasbinRule{
     pub p_type: Option<String>,
     pub v0: Option<String>,

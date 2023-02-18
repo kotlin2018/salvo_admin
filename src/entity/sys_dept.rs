@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysDept {
     // 部门编码
     pub dept_id: Option<i32>,

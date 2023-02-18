@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysMenu {
     pub menu_id: Option<i32>,
     pub menu_name: Option<String>,
@@ -32,7 +33,7 @@ pub struct SysMenu {
 }
 crud!(SysMenu{});
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysMenuApiRule {
     pub sys_menu_menu_id: Option<i64>,
     pub sys_api_id: Option<i64>,

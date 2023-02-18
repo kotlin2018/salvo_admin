@@ -1,7 +1,8 @@
 use rbatis::crud;
 use rbatis::rbdc::datetime::FastDateTime;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysRole {
     // 角色编码
     pub role_id: Option<i32>,
@@ -32,12 +33,14 @@ pub struct SysRole {
 }
 crud!(SysRole{});
 
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysRoleDept {
     pub role_id: Option<i32>,
     pub dept_id: Option<i32>,
 }
 crud!(SysRoleDept{});
 
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysRoleMenu {
     pub role_id: Option<i32>,
     pub menu_id: Option<i32>,

@@ -1,5 +1,4 @@
 pub(crate) mod casbin_rule;
-pub(crate) mod data_scope;
 pub(crate) mod sys_api;
 pub(crate) mod sys_config;
 pub(crate) mod sys_dept;

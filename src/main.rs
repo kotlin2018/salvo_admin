@@ -8,6 +8,8 @@ pub mod logic;
 pub mod entity;
 pub mod config;
 pub mod middleware;
+pub mod dto;
+pub mod mapper;
 
 #[tokio::main]
 async fn main() {

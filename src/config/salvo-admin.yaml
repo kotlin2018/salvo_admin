@@ -2,7 +2,7 @@ application:
   # dev开发环境 test测试环境 prod线上环境
   mode: "dev"
   # 服务器ip，默认使用 0.0.0.0
-  host: "0.0.0.0"
+  host: "127.0.0.1"
   # 服务名称
   name: "testApp"
   # 端口号

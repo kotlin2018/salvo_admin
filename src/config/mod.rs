@@ -28,9 +28,9 @@ pub struct Settings {
 #[derive(Debug,Deserialize,Clone)]
 pub struct Application{
     pub mode: Option<String>,
-    pub host: Option<String>,
+    pub host: String,
     pub name: Option<String>,
-    pub port: Option<String>,
+    pub port: String,
     pub read_timeout: Option<String>,
     pub writer_timeout: Option<String>,
     pub enable_dp: Option<bool>,

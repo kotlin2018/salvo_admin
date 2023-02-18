@@ -11,7 +11,9 @@ pub mod middleware;
 
 #[tokio::main]
 async fn main() {
-    // let addr = format!("{}:{}",&CONFIG.application.host.unwrap(),&CONFIG.application.port.unwrap());
-    // Server::new(TcpListener::bind(&addr)).serve(router()).await;
-    // info!("Local: http://{}",addr);
+    let host = &CONFIG.application.host;
+    let port = &CONFIG.application.port;
+    let addr = format!("{}:{}",host,port);
+    println!("Local: http://{}",addr);
+    Server::new(TcpListener::bind(&addr)).serve(router()).await;
 }

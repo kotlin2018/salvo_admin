@@ -19,7 +19,7 @@ pub struct JWTToken {
     //账号
     pub account: String,
     // //过期时间
-    // pub expire: usize,
+    pub exp: usize,
 }
 
 impl JWTToken {

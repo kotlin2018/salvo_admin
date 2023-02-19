@@ -45,7 +45,7 @@ pub struct Logger {
 #[derive(Debug,Deserialize,Clone)]
 pub struct JWT {
     pub secret: String,
-    pub timeout: String,
+    pub timeout: usize,
 }
 #[derive(Debug,Deserialize,Clone)]
 pub struct Database {
@@ -100,7 +100,7 @@ async fn test_settings(){
     // let sql = std::fs::read_to_string("tests/table_sqlite.sql").unwrap();
     // rb.exec(&sql, vec![]).await.expect("TODO: panic message");
     let username = rbs::Value::String("admin".to_string());
-    let password = rbs::Value::String("$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string());
+    let password = rbs::Value::String("123456".to_string());
 
     let value = rb.query_decode::<SysUser>("select * from sys_user where username = ? and password = ?",vec![username,password]).await;
     println!("value = {:?}",value);

@@ -9,8 +9,9 @@ pub mod entity;
 pub mod config;
 pub mod middleware;
 pub mod dto;
-pub mod dao;
+pub mod mapper;
 pub mod util;
+pub mod error;
 
 #[macro_use]
 extern crate rbatis;

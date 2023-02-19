@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct SysUser {
     // 编码
-    pub user_id: Option<i32>,
+    pub user_id: i32,
     // 用户名
-    pub username: Option<String>,
+    pub username: String,
     // 密码
     pub password: Option<String>,
     // 昵称

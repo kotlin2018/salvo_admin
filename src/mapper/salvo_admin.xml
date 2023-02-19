@@ -29,7 +29,16 @@
 <!--    </select>-->
 
     <select id="get_user">
-        select * from sys_user where username = #{username} and status = '2' and password = #{password}
+        select * from sys_user
+        <where>
+            <if test="username !=''">
+                username = #{username}
+            </if>
+            <if test="password !=''">
+                and password = #{password}
+            </if>
+        </where>
+        order by user_id asc limit 1
     </select>
 
     <select id="get_role">

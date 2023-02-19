@@ -44,8 +44,8 @@ pub struct Logger {
 }
 #[derive(Debug,Deserialize,Clone)]
 pub struct JWT {
-    pub secret: Option<String>,
-    pub timeout: Option<String>,
+    pub secret: String,
+    pub timeout: String,
 }
 #[derive(Debug,Deserialize,Clone)]
 pub struct Database {

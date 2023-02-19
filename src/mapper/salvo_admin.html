@@ -37,12 +37,16 @@
                 ` and password = #{password}`
             </if>
         </where>
-        ` order by user_id asc limit 1`
+        <!-- offset：(pageNumber - 1) * pageSize -->
+        ` order by user_id asc limit #{page_no} offset #{page_size}`
     </select>
 
     <select id="get_role">
         select * from sys_role where role_id = #{role_id} limit 1
     </select>
 
+    <select id="get_dept">
+        select * from sys_dept where dept_id = #{dept_id} and deleted_at is null
+    </select>
 
 </mapper>

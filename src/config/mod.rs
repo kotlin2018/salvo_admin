@@ -61,7 +61,7 @@ pub struct Redis {
 
 impl Default for Settings {
     fn default() -> Self {
-        let yaml_data = std::fs::read_to_string("src/config/salvo-admin.yaml").unwrap();
+        let yaml_data = std::fs::read_to_string("salvo-admin.yaml").unwrap();
         //let yaml_data = include_str!("salvo-admin.yaml");
         serde_yaml::from_str::<Settings>(&yaml_data).unwrap()
     }
@@ -100,7 +100,7 @@ async fn test_settings(){
     // let sql = std::fs::read_to_string("tests/table_sqlite.sql").unwrap();
     // rb.exec(&sql, vec![]).await.expect("TODO: panic message");
     let username = rbs::Value::String("admin".to_string());
-    let password = rbs::Value::String("123456".to_string());
+    let password = rbs::Value::String("$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string());
 
     let value = rb.query_decode::<SysUser>("select * from sys_user where username = ? and password = ?",vec![username,password]).await;
     println!("value = {:?}",value);

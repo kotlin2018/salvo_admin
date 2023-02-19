@@ -36,9 +36,10 @@
             <if test="password !=''">
                 ` and password = #{password}`
             </if>
+            ` and deleted_at is null`
         </where>
         <!-- offset：(pageNumber - 1) * pageSize -->
-        `deleted_at is null order by user_id asc limit #{page_no} offset #{page_size}`
+        ` order by user_id asc limit #{page_no} offset #{page_size}`
     </select>
 
     <select id="get_role">

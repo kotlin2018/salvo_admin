@@ -9,7 +9,11 @@ pub mod entity;
 pub mod config;
 pub mod middleware;
 pub mod dto;
-pub mod mapper;
+pub mod dao;
+pub mod util;
+
+#[macro_use]
+extern crate rbatis;
 
 #[tokio::main]
 async fn main() {

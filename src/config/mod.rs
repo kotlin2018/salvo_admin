@@ -77,6 +77,14 @@ impl Default for Context {
 
         db.init(MysqlDriver{},&database_link)
             .expect("rbatis link database fail!");
+
+        // {
+        //     db.init(
+        //         rbdc_sqlite::driver::SqliteDriver {},
+        //         "sqlite://tests/sqlite.db",
+        //     ).unwrap();
+        // }
+
         let mut context = Context{
             db,
             redis: Some(redis::Client::open(redis_url).unwrap()),
@@ -87,7 +95,19 @@ impl Default for Context {
 
 #[tokio::test]
 async fn test_settings(){
+    use crate::entity::sys_user::SysUser;
     let rb = &CONTEXT.db;
-    let value = rb.fetch("select * from sys_user",vec![]).await;
+    // let sql = std::fs::read_to_string("tests/table_sqlite.sql").unwrap();
+    // rb.exec(&sql, vec![]).await.expect("TODO: panic message");
+    let username = rbs::Value::String("admin".to_string());
+    let password = rbs::Value::String("$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string());
+
+    let value = rb.query_decode::<SysUser>("select * from sys_user where username = ? and password = ?",vec![username,password]).await;
     println!("value = {:?}",value);
 }
+
+
+
+
+
+

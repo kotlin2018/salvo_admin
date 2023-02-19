@@ -11,7 +11,7 @@ pub struct SysUser {
     // 密码
     pub password: Option<String>,
     // 昵称
-    pub nickname: Option<String>,
+    pub nick_name: Option<String>,
     // 手机号
     pub phone: Option<String>,
     // 角色ID

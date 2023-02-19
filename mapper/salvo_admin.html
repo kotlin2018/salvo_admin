@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "https://github.com/rbatis/rbatis/blob/master/rbatis-codegen/mybatis-3-mapper.dtd">
+<mapper>
+<!--    <select id="permission">-->
+<!--        <where>-->
+<!--            <choose>-->
+<!--                <when test="data_scope = 2">-->
+<!--                    `#{table_name}.create_by in (select sys_user.user_id from sys_role_dept left join sys_user on-->
+<!--                    sys_user.dept_id=sys_role_dept.dept_id where sys_role_dept.role_id = #{role_id}`-->
+<!--                </when>-->
+
+<!--                <when test="data_scope = 3">-->
+<!--                    `#{table_name}.create_by in (SELECT user_id from sys_user where dept_id = #{dept_id}`-->
+<!--                </when>-->
+
+<!--                <when test="data_scope = 4">-->
+<!--                    `#{table_name}.create_by in (SELECT user_id from sys_user-->
+<!--                    where sys_user.dept_id in(select dept_id from sys_dept where dept_path like #{'%'+dept_path+'%'}`-->
+
+<!--                </when>-->
+<!--                <when test="data_scope = 5">-->
+<!--                    #{table_name}.create_by = #{user_id}-->
+<!--                </when>-->
+<!--                <otherwise></otherwise>-->
+
+<!--            </choose>-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <select id="get_user">
+        select * from sys_user where username = #{username} and password = #{password}
+    </select>
+
+    <select id="get_role">
+        select * from sys_role where role_id = #{role_id} limit 1
+    </select>
+
+
+</mapper>

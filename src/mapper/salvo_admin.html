@@ -50,4 +50,19 @@
         select * from sys_dept where dept_id = #{dept_id} and deleted_at is null
     </select>
 
+    <select id="get_user_test">
+        select * from sys_user
+        <where>
+            <if test="test == 0">
+                ` username = #{username}`
+            </if>
+            <if test="test == 1">
+                ` and password = #{password}`
+            </if>
+        </where>
+        <if test="order == true">
+            ` order by user_id asc`
+        </if>
+    </select>
+
 </mapper>

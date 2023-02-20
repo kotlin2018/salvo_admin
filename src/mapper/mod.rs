@@ -16,6 +16,9 @@ pub async fn get_role(rb: &mut dyn Executor,role_id: i32) -> rbatis::Result<SysR
 #[html_sql("src/mapper/salvo_admin.html")]
 pub async fn get_dept(rb: &mut dyn Executor,dept_id: i32) -> Result<SysDept>{impled!()}
 
+#[html_sql("src/mapper/salvo_admin.html")]
+pub async fn get_user_test(rb: &mut dyn Executor,username: String,password: String,test: i32,order: bool) -> Result<SysUser>{todo!()}
+
 #[cfg(test)]
 mod tests {
     use rbatis::rbdc::datetime::FastDateTime;
@@ -24,9 +27,19 @@ mod tests {
 
     #[tokio::test]
     async fn test_html_file_sql(){
+        fast_log::init(fast_log::Config::new().console()).expect("rbatis init fail");
         let mut rb = &CONTEXT.db;
         let password = "$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string();
         let user = get_user(&mut rb,"admin".to_string(),password,1,0).await.unwrap();
+        println!("{user:?}")
+    }
+
+    #[tokio::test]
+    async fn test_get_user_test(){
+        fast_log::init(fast_log::Config::new().console()).expect("rbatis init fail");
+        let mut rb = &CONTEXT.db;
+        let password = "$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string();
+        let user = get_user_test(&mut rb,"admin".to_string(),password,0,true).await.unwrap();
         println!("{user:?}")
     }
 }

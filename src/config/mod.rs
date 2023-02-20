@@ -99,11 +99,21 @@ async fn test_settings(){
     let rb = &CONTEXT.db;
     // let sql = std::fs::read_to_string("tests/table_sqlite.sql").unwrap();
     // rb.exec(&sql, vec![]).await.expect("TODO: panic message");
-    let username = rbs::Value::String("admin".to_string());
+    let username = rbs::Value::String("admin2".to_string());
     let password = rbs::Value::String("$2a$10$/Glr4g9Svr6O0kvjsRJCXu3f0W8/dsP3XZyVNi1019ratWpSPMyw.".to_string());
 
     let value = rb.query_decode::<SysUser>("select * from sys_user where username = ? and password = ?",vec![username,password]).await;
-    println!("value = {:?}",value);
+    match value {
+        Ok(user) => {
+
+        },
+        Err(err) => {
+            if err.to_string().contains("error while decoding value: invalid type"){
+                println!("error = {:?}",err.to_string());
+            }
+
+        }
+    }
 }
 
 
